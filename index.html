@@ -25,6 +25,14 @@
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
       background: #94a3b8;
     }
+    th.sortable {
+      cursor: pointer;
+      user-select: none;
+    }
+    th.sortable:hover {
+      background-color: #f1f5f9;
+      color: #0f172a;
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
@@ -39,7 +47,6 @@
           <div class="flex items-center gap-2 mt-1">
             <p class="text-xs text-slate-500">Automated Team Capacity & Worklog Tracking</p>
             <span class="text-slate-300">•</span>
-            <!-- Last Refreshed Label -->
             <p id="last-refresh-label" class="text-xs text-slate-400">Checking last refresh...</p>
           </div>
         </div>
@@ -58,7 +65,7 @@
           <span id="refresh-btn-label">Refresh Data</span>
         </button>
 
-        <!-- Reset / Change Cached Token Button (visible when a token is cached) -->
+        <!-- Reset / Change Cached Token Button -->
         <button id="reset-token-btn" onclick="resetStoredToken()" title="Change or remove stored token"
                 class="hidden p-2 text-xs font-semibold rounded-md border border-slate-300 bg-white hover:bg-slate-100 text-slate-500 transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
@@ -107,7 +114,54 @@
       </div>
     </div>
 
-    <!-- Data Explorer Table -->
+    <!-- TABLE 1: Zero Hours Logged Issues -->
+    <div class="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
+      <div class="p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-base font-semibold text-slate-900">Issues with Zero Logged Time</h2>
+            <span id="zero-badge-count" class="px-2 py-0.5 rounded-full text-[11px] bg-amber-100 text-amber-800 font-semibold">0</span>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5">Backlog or active issues created without logged time</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <select id="zero-filter-sprint" onchange="renderZeroIssuesTable()" class="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-1 focus:ring-blue-500">
+            <option value="">All Sprints</option>
+          </select>
+          <select id="zero-filter-week" onchange="renderZeroIssuesTable()" class="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-1 focus:ring-blue-500">
+            <option value="">All Weeks</option>
+          </select>
+          <select id="zero-filter-status" onchange="renderZeroIssuesTable()" class="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-1 focus:ring-blue-500">
+            <option value="">All Statuses</option>
+          </select>
+          <input type="text" id="zero-search-box" oninput="renderZeroIssuesTable()" placeholder="Search key or summary..."
+                 class="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-1 focus:ring-blue-500 w-48"/>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto max-h-[380px]">
+        <table class="min-w-full text-left text-xs divide-y divide-slate-200">
+          <thead class="bg-slate-50 sticky top-0 z-10 font-semibold text-slate-600">
+            <tr>
+              <th onclick="sortZeroTable('created')" class="sortable px-4 py-3">Created <span id="sort-zero-created"></span></th>
+              <th onclick="sortZeroTable('sprint')" class="sortable px-4 py-3">Sprint <span id="sort-zero-sprint"></span></th>
+              <th onclick="sortZeroTable('calendar_week')" class="sortable px-4 py-3">Week <span id="sort-zero-calendar_week"></span></th>
+              <th onclick="sortZeroTable('issue_key')" class="sortable px-4 py-3">Issue <span id="sort-zero-issue_key"></span></th>
+              <th onclick="sortZeroTable('issue_type')" class="sortable px-4 py-3">Type <span id="sort-zero-issue_type"></span></th>
+              <th onclick="sortZeroTable('status')" class="sortable px-4 py-3">Status <span id="sort-zero-status"></span></th>
+              <th onclick="sortZeroTable('summary')" class="sortable px-4 py-3">Summary <span id="sort-zero-summary"></span></th>
+            </tr>
+          </thead>
+          <tbody id="zero-table-body" class="divide-y divide-slate-100 font-normal text-slate-700">
+            <tr>
+              <td colspan="7" class="px-4 py-6 text-center text-slate-400">Loading issues...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TABLE 2: Worklog Fact Entries Table -->
     <div class="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
       <div class="p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4">
         <div>
@@ -115,13 +169,16 @@
           <p class="text-xs text-slate-500 mt-0.5">Granular logs mapped to dates, weeks, and sprints</p>
         </div>
         <div class="flex flex-wrap items-center gap-3">
-          <select id="filter-sprint" onchange="renderTable()" class="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-1 focus:ring-blue-500">
+          <select id="filter-sprint" onchange="renderFactTable()" class="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-1 focus:ring-blue-500">
             <option value="">All Sprints</option>
           </select>
-          <select id="filter-author" onchange="renderTable()" class="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-1 focus:ring-blue-500">
+          <select id="filter-week" onchange="renderFactTable()" class="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-1 focus:ring-blue-500">
+            <option value="">All Weeks</option>
+          </select>
+          <select id="filter-author" onchange="renderFactTable()" class="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-1 focus:ring-blue-500">
             <option value="">All Authors</option>
           </select>
-          <input type="text" id="search-box" oninput="renderTable()" placeholder="Search issue or comment..."
+          <input type="text" id="search-box" oninput="renderFactTable()" placeholder="Search issue or comment..."
                  class="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-1 focus:ring-blue-500 w-48"/>
         </div>
       </div>
@@ -130,13 +187,13 @@
         <table class="min-w-full text-left text-xs divide-y divide-slate-200">
           <thead class="bg-slate-50 sticky top-0 z-10 font-semibold text-slate-600">
             <tr>
-              <th class="px-4 py-3">Timestamp</th>
-              <th class="px-4 py-3">Sprint</th>
-              <th class="px-4 py-3">Week</th>
-              <th class="px-4 py-3">Author</th>
-              <th class="px-4 py-3">Issue</th>
-              <th class="px-4 py-3 text-right">Hours</th>
-              <th class="px-4 py-3">Comment</th>
+              <th onclick="sortFactTable('timestamp')" class="sortable px-4 py-3">Timestamp <span id="sort-fact-timestamp"></span></th>
+              <th onclick="sortFactTable('sprint_by_date')" class="sortable px-4 py-3">Sprint <span id="sort-fact-sprint_by_date"></span></th>
+              <th onclick="sortFactTable('calendar_week')" class="sortable px-4 py-3">Week <span id="sort-fact-calendar_week"></span></th>
+              <th onclick="sortFactTable('worklog_author')" class="sortable px-4 py-3">Author <span id="sort-fact-worklog_author"></span></th>
+              <th onclick="sortFactTable('issue_key')" class="sortable px-4 py-3">Issue <span id="sort-fact-issue_key"></span></th>
+              <th onclick="sortFactTable('hours_logged')" class="sortable px-4 py-3 text-right">Hours <span id="sort-fact-hours_logged"></span></th>
+              <th onclick="sortFactTable('comment')" class="sortable px-4 py-3">Comment <span id="sort-fact-comment"></span></th>
             </tr>
           </thead>
           <tbody id="table-body" class="divide-y divide-slate-100 font-normal text-slate-700">
@@ -158,8 +215,17 @@
     const STORAGE_KEY = "gh_dispatch_token";
 
     let rawWorklogs = [];
+    let rawZeroIssues = [];
     let authorFirstnames = {};
     let chartInstance = null;
+    let globalSprintList = [];
+
+    // Sorting states
+    let factSortCol = "timestamp";
+    let factSortAsc = false;
+
+    let zeroSortCol = "created";
+    let zeroSortAsc = false;
 
     Chart.register(ChartDataLabels);
 
@@ -199,7 +265,6 @@
     async function updateLastRefreshedTime() {
       const label = document.getElementById("last-refresh-label");
       try {
-        // Send a lightweight HEAD request to inspect file metadata
         const res = await fetch('csv/Fact_Timelogs.csv', { method: 'HEAD', cache: 'no-cache' });
         const lastMod = res.headers.get('Last-Modified');
 
@@ -220,17 +285,62 @@
       }
     }
 
+    // Helper: calculate ISO week from date string (YYYY-MM-DD)
+    function getISOWeek(dateStr) {
+      if (!dateStr) return "";
+      const d = new Date(dateStr);
+      if (isNaN(d)) return "";
+      d.setHours(0, 0, 0, 0);
+      d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+      const week1 = new Date(d.getFullYear(), 0, 4);
+      const weekNum = 1 + Math.round(((d.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+      return `${d.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
+    }
+
+    function getSprintForDate(dateStr, sprintList) {
+      if (!dateStr || !sprintList.length) return "Unassigned";
+      const target = new Date(dateStr.replace(" ", "T"));
+      for (const sp of sprintList) {
+        if (sp.effective_start_date && sp.effective_end_date) {
+          const start = new Date(sp.effective_start_date.replace(" ", "T"));
+          const end = new Date(sp.effective_end_date.replace(" ", "T"));
+          if (target >= start && target <= end) {
+            return sp.sprint_name;
+          }
+        }
+      }
+      return sprintList[0]?.sprint_name || "Sprint 1";
+    }
+
     async function initDashboard() {
       updateLastRefreshedTime();
 
-      const [facts, weekSummary, dimAuthors, dimSprints] = await Promise.all([
+      const [facts, weekSummary, dimAuthors, dimSprints, dimIssues] = await Promise.all([
         loadCSV('csv/Fact_Timelogs.csv'),
         loadCSV('csv/Overview_Weekly.csv'),
         loadCSV('csv/Dim_Authors.csv'),
-        loadCSV('csv/Dim_Sprints.csv')
+        loadCSV('csv/Dim_Sprints.csv'),
+        loadCSV('csv/Dim_Issues.csv')
       ]);
 
       rawWorklogs = facts;
+      globalSprintList = dimSprints;
+
+      // Extract Zero Hours Issues
+      rawZeroIssues = dimIssues
+        .filter(iss => !iss.timespent_hours || Number(iss.timespent_hours) === 0)
+        .map(iss => {
+          const createdDate = iss.created ? String(iss.created).substring(0, 10) : "";
+          const week = getISOWeek(createdDate);
+          const sprint = getSprintForDate(iss.created, dimSprints);
+          return {
+            ...iss,
+            calendar_week: week,
+            sprint: sprint
+          };
+        });
+
+      document.getElementById("zero-badge-count").innerText = rawZeroIssues.length;
 
       dimAuthors.forEach(a => {
         if (a.display_name) {
@@ -246,17 +356,37 @@
       document.getElementById("kpi-total-authors").innerText = uniqueAuthors;
       document.getElementById("kpi-total-issues").innerText = uniqueIssues;
 
+      // Populate Fact Filters
       const sprints = [...new Set(rawWorklogs.map(r => r.sprint_by_date))].filter(Boolean).sort();
+      const weeks = [...new Set(rawWorklogs.map(r => r.calendar_week))].filter(Boolean).sort();
       const authors = [...new Set(rawWorklogs.map(r => r.worklog_author))].filter(Boolean).sort();
 
       const sprintSelect = document.getElementById("filter-sprint");
       sprints.forEach(s => sprintSelect.innerHTML += `<option value="${s}">${s}</option>`);
 
+      const weekSelect = document.getElementById("filter-week");
+      weeks.forEach(w => weekSelect.innerHTML += `<option value="${w}">${w}</option>`);
+
       const authorSelect = document.getElementById("filter-author");
       authors.forEach(a => authorSelect.innerHTML += `<option value="${a}">${a}</option>`);
 
+      // Populate Zero-Issues Filters
+      const zeroSprints = [...new Set(rawZeroIssues.map(r => r.sprint))].filter(Boolean).sort();
+      const zeroWeeks = [...new Set(rawZeroIssues.map(r => r.calendar_week))].filter(Boolean).sort();
+      const zeroStatuses = [...new Set(rawZeroIssues.map(r => r.status))].filter(Boolean).sort();
+
+      const zeroSprintSelect = document.getElementById("zero-filter-sprint");
+      zeroSprints.forEach(s => zeroSprintSelect.innerHTML += `<option value="${s}">${s}</option>`);
+
+      const zeroWeekSelect = document.getElementById("zero-filter-week");
+      zeroWeeks.forEach(w => zeroWeekSelect.innerHTML += `<option value="${w}">${w}</option>`);
+
+      const zeroStatusSelect = document.getElementById("zero-filter-status");
+      zeroStatuses.forEach(st => zeroStatusSelect.innerHTML += `<option value="${st}">${st}</option>`);
+
       buildUnifiedChart(weekSummary, dimSprints);
-      renderTable();
+      renderZeroIssuesTable();
+      renderFactTable();
     }
 
     function buildUnifiedChart(weekData, sprintList) {
@@ -268,7 +398,6 @@
       const minRequiredWidth = Math.max(1000, weekLabels.length * 240);
       document.getElementById('chart-inner-container').style.minWidth = `${minRequiredWidth}px`;
 
-      // Map calendar week string directly to its sprint using Dim_Sprints boundaries
       const getSprintForWeek = (isoWeekStr) => {
         const [year, weekNum] = isoWeekStr.split("-W").map(Number);
         const simpleDate = new Date(Date.UTC(year, 0, 1 + (weekNum - 1) * 7));
@@ -286,8 +415,6 @@
             }
           }
         }
-
-        // Fallback to facts match if available
         const factMatch = rawWorklogs.find(r => r.calendar_week === isoWeekStr && r.sprint_by_date && r.sprint_by_date !== "Outside Sprints");
         return factMatch ? factMatch.sprint_by_date : "SCRUM Sprint " + Math.ceil(weekNum / 2);
       };
@@ -313,7 +440,6 @@
         })
       }));
 
-      // Optimal Band Plugin
       const optimalCapacityZonePlugin = {
         id: 'optimalCapacityZone',
         beforeDraw(chart) {
@@ -352,7 +478,6 @@
         }
       };
 
-      // Hierarchical Axis Plugin with precision name anchoring
       const hierarchicalAxisPlugin = {
         id: 'hierarchicalAxis',
         afterDraw(chart) {
@@ -384,7 +509,7 @@
             });
           });
 
-          // Boxed Calendar Weeks (Level 2)
+          // Boxed Weeks
           const weekBoxY = y.bottom + 70;
           const weekBoxHeight = 24;
 
@@ -420,7 +545,7 @@
             ctx.fillText(week, (leftX + rightX) / 2, weekBoxY + (weekBoxHeight / 2));
           });
 
-          // Boxed Sprints (Level 3)
+          // Boxed Sprints
           const sprintBoxY = weekBoxY + weekBoxHeight + 8;
           const sprintBoxHeight = 28;
 
@@ -506,18 +631,114 @@
       scrollWrapper.scrollLeft = scrollWrapper.scrollWidth;
     }
 
-    function renderTable() {
+    // -------------------------------------------------------------
+    // SORTING & RENDERING LOGIC FOR TABLE 1 (Zero Hours Issues)
+    // -------------------------------------------------------------
+    function sortZeroTable(col) {
+      if (zeroSortCol === col) {
+        zeroSortAsc = !zeroSortAsc;
+      } else {
+        zeroSortCol = col;
+        zeroSortAsc = true;
+      }
+      updateSortIndicators("zero", zeroSortCol, zeroSortAsc, ['created', 'sprint', 'calendar_week', 'issue_key', 'issue_type', 'status', 'summary']);
+      renderZeroIssuesTable();
+    }
+
+    function renderZeroIssuesTable() {
+      const selectedSprint = document.getElementById("zero-filter-sprint").value;
+      const selectedWeek = document.getElementById("zero-filter-week").value;
+      const selectedStatus = document.getElementById("zero-filter-status").value;
+      const query = document.getElementById("zero-search-box").value.toLowerCase();
+
+      let filtered = rawZeroIssues.filter(row => {
+        const matchSprint = !selectedSprint || row.sprint === selectedSprint;
+        const matchWeek = !selectedWeek || row.calendar_week === selectedWeek;
+        const matchStatus = !selectedStatus || row.status === selectedStatus;
+        const matchQuery = !query || 
+          (row.issue_key && String(row.issue_key).toLowerCase().includes(query)) ||
+          (row.summary && String(row.summary).toLowerCase().includes(query));
+        return matchSprint && matchWeek && matchStatus && matchQuery;
+      });
+
+      // Sort
+      filtered.sort((a, b) => {
+        let valA = a[zeroSortCol] ?? "";
+        let valB = b[zeroSortCol] ?? "";
+        if (typeof valA === "string") valA = valA.toLowerCase();
+        if (typeof valB === "string") valB = valB.toLowerCase();
+        if (valA < valB) return zeroSortAsc ? -1 : 1;
+        if (valA > valB) return zeroSortAsc ? 1 : -1;
+        return 0;
+      });
+
+      const tbody = document.getElementById("zero-table-body");
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-6 text-center text-slate-400">No zero-hour issues match your criteria.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(r => `
+        <tr class="hover:bg-slate-50 transition">
+          <td class="px-4 py-2.5 font-mono text-[11px] text-slate-600">${r.created || ''}</td>
+          <td class="px-4 py-2.5"><span class="px-2 py-0.5 rounded text-[11px] bg-blue-50 text-blue-700 font-medium">${r.sprint || ''}</span></td>
+          <td class="px-4 py-2.5 text-slate-600">${r.calendar_week || ''}</td>
+          <td class="px-4 py-2.5 font-mono font-medium">
+            <a href="https://${JIRA_DOMAIN}/browse/${r.issue_key}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 hover:underline">
+              ${r.issue_key || ''}
+            </a>
+          </td>
+          <td class="px-4 py-2.5 text-slate-600">${r.issue_type || ''}</td>
+          <td class="px-4 py-2.5"><span class="px-2 py-0.5 rounded text-[11px] bg-slate-100 text-slate-700 font-medium">${r.status || ''}</span></td>
+          <td class="px-4 py-2.5 text-slate-700 truncate max-w-sm" title="${r.summary || ''}">${r.summary || '-'}</td>
+        </tr>
+      `).join("");
+    }
+
+    // -------------------------------------------------------------
+    // SORTING & RENDERING LOGIC FOR TABLE 2 (Fact Timelogs)
+    // -------------------------------------------------------------
+    function sortFactTable(col) {
+      if (factSortCol === col) {
+        factSortAsc = !factSortAsc;
+      } else {
+        factSortCol = col;
+        factSortAsc = true;
+      }
+      updateSortIndicators("fact", factSortCol, factSortAsc, ['timestamp', 'sprint_by_date', 'calendar_week', 'worklog_author', 'issue_key', 'hours_logged', 'comment']);
+      renderFactTable();
+    }
+
+    function renderFactTable() {
       const selectedSprint = document.getElementById("filter-sprint").value;
+      const selectedWeek = document.getElementById("filter-week").value;
       const selectedAuthor = document.getElementById("filter-author").value;
       const query = document.getElementById("search-box").value.toLowerCase();
 
-      const filtered = rawWorklogs.filter(row => {
+      let filtered = rawWorklogs.filter(row => {
         const matchSprint = !selectedSprint || row.sprint_by_date === selectedSprint;
+        const matchWeek = !selectedWeek || row.calendar_week === selectedWeek;
         const matchAuthor = !selectedAuthor || row.worklog_author === selectedAuthor;
         const matchQuery = !query || 
           (row.issue_key && String(row.issue_key).toLowerCase().includes(query)) ||
           (row.comment && String(row.comment).toLowerCase().includes(query));
-        return matchSprint && matchAuthor && matchQuery;
+        return matchSprint && matchWeek && matchAuthor && matchQuery;
+      });
+
+      // Sort
+      filtered.sort((a, b) => {
+        let valA = a[factSortCol] ?? "";
+        let valB = b[factSortCol] ?? "";
+        if (factSortCol === 'hours_logged') {
+          valA = Number(valA) || 0;
+          valB = Number(valB) || 0;
+        } else {
+          if (typeof valA === "string") valA = valA.toLowerCase();
+          if (typeof valB === "string") valB = valB.toLowerCase();
+        }
+        if (valA < valB) return factSortAsc ? -1 : 1;
+        if (valA > valB) return factSortAsc ? 1 : -1;
+        return 0;
       });
 
       const tbody = document.getElementById("table-body");
@@ -541,6 +762,19 @@
           <td class="px-4 py-2.5 text-slate-500 truncate max-w-xs" title="${r.comment || ''}">${r.comment || '-'}</td>
         </tr>
       `).join("");
+    }
+
+    function updateSortIndicators(prefix, activeCol, isAsc, allCols) {
+      allCols.forEach(col => {
+        const el = document.getElementById(`sort-${prefix}-${col}`);
+        if (!el) return;
+        if (col === activeCol) {
+          el.innerText = isAsc ? " ↑" : " ↓";
+          el.className = "text-blue-600 font-bold";
+        } else {
+          el.innerText = "";
+        }
+      });
     }
 
     function updateTokenUI() {
