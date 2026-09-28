@@ -178,8 +178,8 @@
           <select id="filter-author" onchange="renderFactTable()" class="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-1 focus:ring-blue-500">
             <option value="">All Authors</option>
           </select>
-          <input type="text" id="search-box" oninput="renderFactTable()" placeholder="Search issue or comment..."
-                 class="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-1 focus:ring-blue-500 w-48"/>
+          <input type="text" id="search-box" oninput="renderFactTable()" placeholder="Search issue, summary, comment..."
+                 class="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-1 focus:ring-blue-500 w-52"/>
         </div>
       </div>
 
@@ -188,17 +188,18 @@
           <thead class="bg-slate-50 sticky top-0 z-10 font-semibold text-slate-600">
             <tr>
               <th onclick="sortFactTable('timestamp')" class="sortable px-4 py-3">Timestamp <span id="sort-fact-timestamp"></span></th>
+              <th onclick="sortFactTable('issue_key')" class="sortable px-4 py-3">Issue <span id="sort-fact-issue_key"></span></th>
+              <th onclick="sortFactTable('issue_summary')" class="sortable px-4 py-3">Summary <span id="sort-fact-issue_summary"></span></th>
               <th onclick="sortFactTable('sprint_by_date')" class="sortable px-4 py-3">Sprint <span id="sort-fact-sprint_by_date"></span></th>
               <th onclick="sortFactTable('calendar_week')" class="sortable px-4 py-3">Week <span id="sort-fact-calendar_week"></span></th>
               <th onclick="sortFactTable('worklog_author')" class="sortable px-4 py-3">Author <span id="sort-fact-worklog_author"></span></th>
-              <th onclick="sortFactTable('issue_key')" class="sortable px-4 py-3">Issue <span id="sort-fact-issue_key"></span></th>
               <th onclick="sortFactTable('hours_logged')" class="sortable px-4 py-3 text-right">Hours <span id="sort-fact-hours_logged"></span></th>
               <th onclick="sortFactTable('comment')" class="sortable px-4 py-3">Comment <span id="sort-fact-comment"></span></th>
             </tr>
           </thead>
           <tbody id="table-body" class="divide-y divide-slate-100 font-normal text-slate-700">
             <tr>
-              <td colspan="7" class="px-4 py-6 text-center text-slate-400">Loading worklogs from CSV...</td>
+              <td colspan="8" class="px-4 py-6 text-center text-slate-400">Loading worklogs from CSV...</td>
             </tr>
           </tbody>
         </table>
@@ -217,6 +218,7 @@
     let rawWorklogs = [];
     let rawZeroIssues = [];
     let authorFirstnames = {};
+    let issueSummaryMap = {};
     let chartInstance = null;
     let globalSprintList = [];
 
@@ -249,9 +251,11 @@
       }
     }, { passive: false });
 
+    // Cache-busting loader to always fetch fresh CSVs after GitHub Action completes
     function loadCSV(path) {
       return new Promise((resolve) => {
-        Papa.parse(path, {
+        const cacheBuster = `${path}?t=${Date.now()}`;
+        Papa.parse(cacheBuster, {
           download: true,
           header: true,
           dynamicTyping: true,
@@ -265,7 +269,7 @@
     async function updateLastRefreshedTime() {
       const label = document.getElementById("last-refresh-label");
       try {
-        const res = await fetch('csv/Fact_Timelogs.csv', { method: 'HEAD', cache: 'no-cache' });
+        const res = await fetch(`csv/Fact_Timelogs.csv?t=${Date.now()}`, { method: 'HEAD', cache: 'no-cache' });
         const lastMod = res.headers.get('Last-Modified');
 
         if (lastMod) {
@@ -323,8 +327,20 @@
         loadCSV('csv/Dim_Issues.csv')
       ]);
 
-      rawWorklogs = facts;
       globalSprintList = dimSprints;
+
+      // Build Issue Summary Dictionary
+      dimIssues.forEach(iss => {
+        if (iss.issue_key) {
+          issueSummaryMap[iss.issue_key] = iss.summary || "";
+        }
+      });
+
+      // Attach summary directly to worklogs
+      rawWorklogs = facts.map(r => ({
+        ...r,
+        issue_summary: issueSummaryMap[r.issue_key] || ""
+      }));
 
       // Extract Zero Hours Issues
       rawZeroIssues = dimIssues
@@ -486,26 +502,34 @@
 
           ctx.font = '10px sans-serif';
           ctx.fillStyle = '#64748b';
-          ctx.textAlign = 'right';
-          ctx.textBaseline = 'middle';
 
-          chart.data.datasets.forEach((dataset, datasetIdx) => {
-            const meta = chart.getDatasetMeta(datasetIdx);
-            const fullName = dataset.label;
-            const firstName = authorFirstnames[fullName] || fullName.trim().split(" ")[0];
+          // Iterate tick by tick (week by week) to guarantee names align under their rendered bar coordinate
+          weekLabels.forEach((week, weekIdx) => {
+            const activeBars = [];
 
-            meta.data.forEach((bar, index) => {
-              const val = dataset.data[index];
-              if (val > 0) {
-                const posX = bar.x;
-                const posY = y.bottom + 6;
+            chart.data.datasets.forEach((ds, dsIdx) => {
+              const meta = chart.getDatasetMeta(dsIdx);
+              const bar = meta.data[weekIdx];
+              const val = ds.data[weekIdx];
 
-                ctx.save();
-                ctx.translate(posX, posY);
-                ctx.rotate(-Math.PI / 3);
-                ctx.fillText(firstName, 0, 0);
-                ctx.restore();
+              if (bar && val > 0) {
+                const fullName = ds.label;
+                const firstName = authorFirstnames[fullName] || fullName.trim().split(" ")[0];
+                activeBars.push({ x: bar.x, name: firstName });
               }
+            });
+
+            // Sort left-to-right to guarantee exact alignment under each bar
+            activeBars.sort((a, b) => a.x - b.x);
+
+            activeBars.forEach(item => {
+              ctx.save();
+              ctx.translate(item.x, y.bottom + 6);
+              ctx.rotate(-Math.PI / 3);
+              ctx.textAlign = 'right';
+              ctx.textBaseline = 'middle';
+              ctx.fillText(item.name, 0, 0);
+              ctx.restore();
             });
           });
 
@@ -705,7 +729,7 @@
         factSortCol = col;
         factSortAsc = true;
       }
-      updateSortIndicators("fact", factSortCol, factSortAsc, ['timestamp', 'sprint_by_date', 'calendar_week', 'worklog_author', 'issue_key', 'hours_logged', 'comment']);
+      updateSortIndicators("fact", factSortCol, factSortAsc, ['timestamp', 'issue_key', 'issue_summary', 'sprint_by_date', 'calendar_week', 'worklog_author', 'hours_logged', 'comment']);
       renderFactTable();
     }
 
@@ -721,6 +745,7 @@
         const matchAuthor = !selectedAuthor || row.worklog_author === selectedAuthor;
         const matchQuery = !query || 
           (row.issue_key && String(row.issue_key).toLowerCase().includes(query)) ||
+          (row.issue_summary && String(row.issue_summary).toLowerCase().includes(query)) ||
           (row.comment && String(row.comment).toLowerCase().includes(query));
         return matchSprint && matchWeek && matchAuthor && matchQuery;
       });
@@ -743,21 +768,22 @@
 
       const tbody = document.getElementById("table-body");
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-6 text-center text-slate-400">No matching logs found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-6 text-center text-slate-400">No matching logs found.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = filtered.map(r => `
         <tr class="hover:bg-slate-50 transition">
           <td class="px-4 py-2.5 font-mono text-[11px] text-slate-600">${r.timestamp || ''}</td>
-          <td class="px-4 py-2.5"><span class="px-2 py-0.5 rounded text-[11px] bg-blue-50 text-blue-700 font-medium">${r.sprint_by_date || ''}</span></td>
-          <td class="px-4 py-2.5 text-slate-600">${r.calendar_week || ''}</td>
-          <td class="px-4 py-2.5 font-medium text-slate-900">${r.worklog_author || ''}</td>
           <td class="px-4 py-2.5 font-mono font-medium">
             <a href="https://${JIRA_DOMAIN}/browse/${r.issue_key}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 hover:underline">
               ${r.issue_key || ''}
             </a>
           </td>
+          <td class="px-4 py-2.5 text-slate-800 font-medium truncate max-w-xs" title="${r.issue_summary || ''}">${r.issue_summary || '-'}</td>
+          <td class="px-4 py-2.5"><span class="px-2 py-0.5 rounded text-[11px] bg-blue-50 text-blue-700 font-medium">${r.sprint_by_date || ''}</span></td>
+          <td class="px-4 py-2.5 text-slate-600">${r.calendar_week || ''}</td>
+          <td class="px-4 py-2.5 font-medium text-slate-900">${r.worklog_author || ''}</td>
           <td class="px-4 py-2.5 text-right font-bold text-slate-900">${Number(r.hours_logged).toFixed(2)}</td>
           <td class="px-4 py-2.5 text-slate-500 truncate max-w-xs" title="${r.comment || ''}">${r.comment || '-'}</td>
         </tr>

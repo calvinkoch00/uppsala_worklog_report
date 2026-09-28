@@ -308,11 +308,18 @@ def build_star_report():
 
     # Build Overviews
     if not df_facts.empty:
-        df_overview_week = df_facts.pivot_table(
-            index=["calendar_week", "worklog_author"],
-            values="hours_logged",
-            aggfunc="sum"
-        ).reset_index().rename(columns={"hours_logged": "total_hours"})
+        # Unstack with fill_value=0 so every author is present in every week
+        df_overview_week = (
+            df_facts.pivot_table(
+                index="calendar_week",
+                columns="worklog_author",
+                values="hours_logged",
+                aggfunc="sum",
+                fill_value=0
+            )
+            .stack()
+            .reset_index(name="total_hours")
+        )
 
         df_overview_sprint = df_facts.pivot_table(
             index=["sprint_by_date", "worklog_author"],
