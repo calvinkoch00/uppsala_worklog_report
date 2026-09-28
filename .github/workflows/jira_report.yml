@@ -2,9 +2,11 @@ name: Generate Jira Sprint Worklog Report
 
 on:
   schedule:
-    # Runs every Monday at 07:00 UTC
-    - cron: '0 7 * * 1'
-  workflow_dispatch: # Allows manual trigger via GitHub UI button
+    - cron: '0 7 * * 1' # Every Monday at 07:00 UTC
+  workflow_dispatch:      # Allows button trigger from UI / API
+
+permissions:
+  contents: write # Needed to commit back to the repo
 
 jobs:
   run-report:
@@ -19,7 +21,9 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests pandas openpyxl
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Execute Report Script
         env:
@@ -28,8 +32,14 @@ jobs:
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
         run: python export_sprint_worklogs.py
 
-      - name: Upload Excel as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Sprint-Worklog-Report
-          path: sprint_worklog_report.xlsx
+      - name: Commit and Push Updated Reports
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add csv/ sprint_worklog_report.xlsx
+          if git diff --staged --quiet; then
+            echo "No changes in worklogs to commit."
+          else
+            git commit -m "chore: automated worklog report update [skip ci]"
+            git push origin main
+          fi

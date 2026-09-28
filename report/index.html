@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Worklog & Sprint Analytics</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js, ChartDataLabels Plugin & PapaParse -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Navigation Bar -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">J</div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-slate-900 leading-none">Sprint Worklog Dashboard</h1>
+          <p class="text-xs text-slate-500 mt-1">Automated Team Capacity & Worklog Tracking</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <!-- Download Source Excel -->
+        <a href="../sprint_worklog_report.xlsx" download
+           class="inline-flex items-center px-3.5 py-2 text-xs font-semibold rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-sm transition">
+          <svg class="w-4 h-4 mr-1.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Export Source Excel (.xlsx)
+        </a>
+
+        <!-- Trigger GitHub Actions Refresh Button -->
+        <button id="refresh-btn" onclick="triggerWorkflow()"
+                class="inline-flex items-center px-3.5 py-2 text-xs font-semibold rounded-md text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition">
+          <svg id="refresh-spinner" class="hidden animate-spin -ml-0.5 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+          Refresh Data via Actions
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full space-y-8">
+
+    <!-- KPI Metric Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Hours Logged</p>
+        <p id="kpi-total-hours" class="text-2xl font-bold text-slate-900 mt-1">--</p>
+      </div>
+      <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Active Contributors</p>
+        <p id="kpi-total-authors" class="text-2xl font-bold text-slate-900 mt-1">--</p>
+      </div>
+      <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Issues Worked On</p>
+        <p id="kpi-total-issues" class="text-2xl font-bold text-slate-900 mt-1">--</p>
+      </div>
+      <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Worklog Entries</p>
+        <p id="kpi-total-logs" class="text-2xl font-bold text-slate-900 mt-1">--</p>
+      </div>
+    </div>
+
+    <!-- Charts Section (Side-by-side grouped bars) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm flex flex-col">
+        <h2 class="text-sm font-semibold text-slate-900 mb-2">Hours Logged per Sprint (by Date)</h2>
+        <div class="relative flex-1 min-h-[340px]">
+          <canvas id="sprintChart"></canvas>
+        </div>
+      </div>
+      <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm flex flex-col">
+        <h2 class="text-sm font-semibold text-slate-900 mb-2">Hours per Calendar Week</h2>
+        <div class="relative flex-1 min-h-[340px]">
+          <canvas id="weeklyChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Data Explorer Table -->
+    <div class="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
+      <div class="p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h2 class="text-base font-semibold text-slate-900">Worklog Entries (Fact Table)</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Atomic logged time down to the exact second</p>
+        </div>
+        <!-- Table Filters -->
+        <div class="flex flex-wrap items-center gap-3">
+          <select id="filter-sprint" onchange="renderTable()" class="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-1 focus:ring-blue-500">
+            <option value="">All Sprints</option>
+          </select>
+          <select id="filter-author" onchange="renderTable()" class="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-1 focus:ring-blue-500">
+            <option value="">All Authors</option>
+          </select>
+          <input type="text" id="search-box" oninput="renderTable()" placeholder="Search issue or comment..."
+                 class="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-1 focus:ring-blue-500 w-48"/>
+        </div>
+      </div>
+
+      <!-- Table Body -->
+      <div class="overflow-x-auto max-h-[460px]">
+        <table class="min-w-full text-left text-xs divide-y divide-slate-200">
+          <thead class="bg-slate-50 sticky top-0 z-10 font-semibold text-slate-600">
+            <tr>
+              <th class="px-4 py-3">Timestamp</th>
+              <th class="px-4 py-3">Sprint</th>
+              <th class="px-4 py-3">Week</th>
+              <th class="px-4 py-3">Author</th>
+              <th class="px-4 py-3">Issue</th>
+              <th class="px-4 py-3 text-right">Hours</th>
+              <th class="px-4 py-3">Comment</th>
+            </tr>
+          </thead>
+          <tbody id="table-body" class="divide-y divide-slate-100 font-normal text-slate-700">
+            <tr>
+              <td colspan="7" class="px-4 py-6 text-center text-slate-400">Loading worklogs from CSV...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // GitHub API Configuration for Workflow Dispatch
+    const GH_OWNER = "calvin-koch";
+    const GH_REPO = "uppsala_worklog_report";
+    const WORKFLOW_FILE = "jira_report.yml";
+
+    let rawWorklogs = [];
+
+    // Register ChartDataLabels plugin
+    Chart.register(ChartDataLabels);
+
+    // CSV Loader Helper
+    function loadCSV(path) {
+      return new Promise((resolve) => {
+        Papa.parse(path, {
+          download: true,
+          header: true,
+          dynamicTyping: true,
+          skipEmptyLines: true,
+          complete: (results) => resolve(results.data),
+          error: () => resolve([])
+        });
+      });
+    }
+
+    // Firstname lookup map
+    let authorFirstnames = {};
+
+    async function initDashboard() {
+      // Load dimensions along with facts and summaries
+      const [facts, sprintSummary, weekSummary, dimAuthors] = await Promise.all([
+        loadCSV('../csv/Fact_Timelogs.csv'),
+        loadCSV('../csv/Overview_Sprint.csv'),
+        loadCSV('../csv/Overview_Weekly.csv'),
+        loadCSV('../csv/Dim_Authors.csv')
+      ]);
+
+      rawWorklogs = facts;
+
+      // Populate firstname dictionary (fallback to first word of displayName)
+      dimAuthors.forEach(a => {
+        if (a.display_name) {
+          authorFirstnames[a.display_name] = a.firstname || a.display_name.trim().split(" ")[0];
+        }
+      });
+
+      // Calculate Metrics
+      const totalHours = rawWorklogs.reduce((sum, r) => sum + (Number(r.hours_logged) || 0), 0);
+      const uniqueAuthors = new Set(rawWorklogs.map(r => r.worklog_author)).size;
+      const uniqueIssues = new Set(rawWorklogs.map(r => r.issue_key)).size;
+
+      document.getElementById("kpi-total-hours").innerText = totalHours.toFixed(2) + " h";
+      document.getElementById("kpi-total-authors").innerText = uniqueAuthors;
+      document.getElementById("kpi-total-issues").innerText = uniqueIssues;
+      document.getElementById("kpi-total-logs").innerText = rawWorklogs.length;
+
+      // Populate Dropdowns
+      const sprints = [...new Set(rawWorklogs.map(r => r.sprint_by_date))].filter(Boolean).sort();
+      const authors = [...new Set(rawWorklogs.map(r => r.worklog_author))].filter(Boolean).sort();
+
+      const sprintSelect = document.getElementById("filter-sprint");
+      sprints.forEach(s => sprintSelect.innerHTML += `<option value="${s}">${s}</option>`);
+
+      const authorSelect = document.getElementById("filter-author");
+      authors.forEach(a => authorSelect.innerHTML += `<option value="${a}">${a}</option>`);
+
+      // Initialize Visualizations
+      buildCharts(sprintSummary, weekSummary);
+      renderTable();
+    }
+
+    function buildCharts(sprintData, weekData) {
+      const palette = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'];
+
+      // Custom Plugin: Renders firstname rotated 90 deg counterclockwise under each bar
+      const verticalFirstnamesPlugin = {
+        id: 'verticalFirstnames',
+        afterDraw(chart) {
+          const { ctx } = chart;
+          ctx.save();
+          ctx.font = '10px sans-serif';
+          ctx.fillStyle = '#64748b'; // slate-500
+          ctx.textAlign = 'right';
+          ctx.textBaseline = 'middle';
+
+          chart.data.datasets.forEach((dataset, datasetIndex) => {
+            const meta = chart.getDatasetMeta(datasetIndex);
+            if (meta.hidden) return;
+
+            const fullName = dataset.label;
+            const firstName = authorFirstnames[fullName] || fullName.trim().split(" ")[0];
+
+            meta.data.forEach((bar, index) => {
+              const val = dataset.data[index];
+              // Only draw author name if bar exists and has logged hours
+              if (val > 0) {
+                const x = bar.x;
+                const y = chart.scales.y.bottom + 8; // Start 8px below bottom baseline
+
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(-Math.PI / 3); // 90 degrees counterclockwise
+                ctx.fillText(firstName, 0, 0);
+                ctx.restore();
+              }
+            });
+          });
+          ctx.restore();
+        }
+      };
+
+      const getCommonOptions = (yAxisTitle) => ({
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+          padding: {
+            top: 24,
+            bottom: 30 // Extra room for the rotated names
+          }
+        },
+        scales: {
+          x: {
+            stacked: false,
+            grid: { display: false },
+            ticks: {
+              padding: 55, // Pushes sprint/week label down beneath vertical names
+              font: { size: 12, weight: 'bold' },
+              color: '#1e293b'
+            }
+          },
+          y: {
+            stacked: false,
+            beginAtZero: true,
+            grid: { color: '#f1f5f9' },
+            title: { display: true, text: yAxisTitle, color: '#64748b' },
+            ticks: { color: '#64748b' }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false // Legend disabled as requested
+          },
+          tooltip: {
+            callbacks: {
+              title: (items) => items[0].dataset.label, // Shows full author name
+              label: (context) => `${context.raw} hrs`
+            }
+          },
+          datalabels: {
+            anchor: 'end',
+            align: 'top',
+            offset: 2,
+            color: '#1e293b',
+            font: { size: 10, weight: 'bold' },
+            formatter: (val) => (val > 0 ? val : ''),
+            clip: false
+          }
+        }
+      });
+
+      // 1. Sprint Chart
+      const sprintLabels = [...new Set(sprintData.map(d => d.sprint_by_date))];
+      const sprintAuthors = [...new Set(sprintData.map(d => d.worklog_author))];
+
+      const sprintDatasets = sprintAuthors.map((author, idx) => ({
+        label: author,
+        backgroundColor: palette[idx % palette.length],
+        borderRadius: 3,
+        data: sprintLabels.map(s => {
+          const entry = sprintData.find(d => d.sprint_by_date === s && d.worklog_author === author);
+          return entry ? Number(entry.total_hours) : 0;
+        })
+      }));
+
+      new Chart(document.getElementById('sprintChart'), {
+        type: 'bar',
+        data: { labels: sprintLabels, datasets: sprintDatasets },
+        options: getCommonOptions('Hours Logged'),
+        plugins: [verticalFirstnamesPlugin]
+      });
+
+      // 2. Weekly Chart
+      const weekLabels = [...new Set(weekData.map(d => d.calendar_week))].sort();
+      const weekAuthors = [...new Set(weekData.map(d => d.worklog_author))];
+
+      const weekDatasets = weekAuthors.map((author, idx) => ({
+        label: author,
+        backgroundColor: palette[idx % palette.length],
+        borderRadius: 3,
+        data: weekLabels.map(w => {
+          const entry = weekData.find(d => d.calendar_week === w && d.worklog_author === author);
+          return entry ? Number(entry.total_hours) : 0;
+        })
+      }));
+
+      new Chart(document.getElementById('weeklyChart'), {
+        type: 'bar',
+        data: { labels: weekLabels, datasets: weekDatasets },
+        options: getCommonOptions('Hours Logged'),
+        plugins: [verticalFirstnamesPlugin]
+      });
+    }
+
+    function renderTable() {
+      const selectedSprint = document.getElementById("filter-sprint").value;
+      const selectedAuthor = document.getElementById("filter-author").value;
+      const query = document.getElementById("search-box").value.toLowerCase();
+
+      const filtered = rawWorklogs.filter(row => {
+        const matchSprint = !selectedSprint || row.sprint_by_date === selectedSprint;
+        const matchAuthor = !selectedAuthor || row.worklog_author === selectedAuthor;
+        const matchQuery = !query || 
+          (row.issue_key && String(row.issue_key).toLowerCase().includes(query)) ||
+          (row.comment && String(row.comment).toLowerCase().includes(query));
+        return matchSprint && matchAuthor && matchQuery;
+      });
+
+      const tbody = document.getElementById("table-body");
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-6 text-center text-slate-400">No matching logs found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(r => `
+        <tr class="hover:bg-slate-50 transition">
+          <td class="px-4 py-2.5 font-mono text-[11px] text-slate-600">${r.timestamp || ''}</td>
+          <td class="px-4 py-2.5"><span class="px-2 py-0.5 rounded text-[11px] bg-blue-50 text-blue-700 font-medium">${r.sprint_by_date || ''}</span></td>
+          <td class="px-4 py-2.5 text-slate-600">${r.calendar_week || ''}</td>
+          <td class="px-4 py-2.5 font-medium text-slate-900">${r.worklog_author || ''}</td>
+          <td class="px-4 py-2.5 font-mono font-medium text-blue-600">${r.issue_key || ''}</td>
+          <td class="px-4 py-2.5 text-right font-bold text-slate-900">${Number(r.hours_logged).toFixed(2)}</td>
+          <td class="px-4 py-2.5 text-slate-500 truncate max-w-xs" title="${r.comment || ''}">${r.comment || '-'}</td>
+        </tr>
+      `).join("");
+    }
+
+    async function triggerWorkflow() {
+      let pat = localStorage.getItem("gh_pat");
+      if (!pat) {
+        pat = prompt("Enter a GitHub Personal Access Token (with repo actions:write permission) to trigger the refresh:");
+        if (pat) localStorage.setItem("gh_pat", pat);
+        else return;
+      }
+
+      const spinner = document.getElementById("refresh-spinner");
+      const btn = document.getElementById("refresh-btn");
+      spinner.classList.remove("hidden");
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/actions/workflows/${WORKFLOW_FILE}/dispatches`, {
+          method: "POST",
+          headers: {
+            "Accept": "application/vnd.github+json",
+            "Authorization": `Bearer ${pat}`
+          },
+          body: JSON.stringify({ ref: "main" })
+        });
+
+        if (res.status === 204) {
+          alert("GitHub Action dispatched successfully! The data will refresh in 1-2 minutes once the pipeline completes.");
+        } else {
+          const err = await res.json();
+          alert("Error triggering workflow: " + (err.message || res.statusText));
+          localStorage.removeItem("gh_pat");
+        }
+      } catch (e) {
+        alert("Failed to connect to GitHub API: " + e.message);
+      } finally {
+        spinner.classList.add("hidden");
+        btn.disabled = false;
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", initDashboard);
+  </script>
+</body>
+</html>

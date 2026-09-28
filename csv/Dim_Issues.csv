@@ -1,0 +1,67 @@
+issue_key,summary,issue_type,status,timespent_hours,created,updated
+SCRUM-78,Risk analysis and planning,Subtask,To Do,0.0,2026-09-28 13:38:45,2026-09-28 13:40:32
+SCRUM-77,List of potential risks,Subtask,To Do,0.0,2026-09-28 13:37:59,2026-09-28 13:40:14
+SCRUM-76,Introduction,Subtask,To Do,0.0,2026-09-28 13:37:40,2026-09-28 13:42:36
+SCRUM-75,Sprint 3 planning meeting,Task,To Do,4.0,2026-09-25 10:49:06,2026-09-28 14:00:39
+SCRUM-74,Look through options for time tracking,Task,To Do,0.0,2026-09-25 10:40:35,2026-09-25 10:40:35
+SCRUM-73,Prepare for Project Management and Tech Lead meeting,Task,To Do,0.0,2026-09-25 10:32:10,2026-09-28 13:40:03
+SCRUM-72,Design Level 4,Task,To Do,0.0,2026-09-23 14:07:23,2026-09-23 14:07:33
+SCRUM-71,Attend Technical Lead meeting 3,Task,To Do,0.0,2026-09-23 14:05:18,2026-09-28 13:39:58
+SCRUM-70,Attend Project Management meeting 3,Task,To Do,0.0,2026-09-23 14:05:17,2026-09-28 13:39:56
+SCRUM-69,"Submit A3, Artefacts",Task,To Do,0.0,2026-09-23 14:03:04,2026-09-28 13:43:04
+SCRUM-68,Initial planning of sprint 3,Task,Done,0.0,2026-09-23 14:00:17,2026-09-23 14:08:42
+SCRUM-67,"Submit D5, Integration and Project Completion Plan",Task,To Do,0.0,2026-09-23 13:59:53,2026-09-23 14:02:47
+SCRUM-66,"Submit D4, Risk Assesment Plan",Task,To Do,0.0,2026-09-23 13:59:26,2026-09-28 13:42:01
+SCRUM-65,User Requirements,Epic,To Do,0.0,2026-09-23 13:55:24,2026-09-23 13:56:06
+SCRUM-64,Group Meeting 24.09.2026,Task,Done,6.0,2026-09-23 13:48:35,2026-09-28 13:53:59
+SCRUM-63,Project Handover Code Cleanup,Epic,To Do,0.0,2026-09-21 16:08:11,2026-09-21 16:08:12
+SCRUM-62,Meetings,Epic,To Do,0.0,2026-09-21 16:06:13,2026-09-21 16:10:11
+SCRUM-61,Course,Epic,To Do,0.0,2026-09-21 16:05:17,2026-09-21 16:09:47
+SCRUM-60,Level 4 Game Logic,Task,To Do,0.0,2026-09-21 16:03:04,2026-09-21 16:03:56
+SCRUM-59,Level 4,Epic,To Do,0.0,2026-09-21 16:02:30,2026-09-21 16:09:57
+SCRUM-58,Group Meeting 21.09.2026,Task,Done,9.0,2026-09-21 14:29:42,2026-09-28 13:36:42
+SCRUM-57,add more user stories,Subtask,Done,0.0,2026-09-21 14:16:53,2026-09-23 13:41:49
+SCRUM-56,Adjusting user requirements and adding more user stories,Subtask,Done,0.0,2026-09-21 14:16:48,2026-09-23 22:58:08
+SCRUM-55,Reorganise the files and folders in the github repo,Task,In Review,3.0,2026-09-21 13:15:32,2026-09-28 14:38:13
+SCRUM-54,"Update D2, Requirements Specification",Task,Done,2.0,2026-09-20 18:22:35,2026-09-28 13:38:30
+SCRUM-53,"Update D1, Group Agreement",Task,Done,0.0,2026-09-20 18:15:13,2026-09-24 13:36:15
+SCRUM-52,Brainstorming drafts of level 4,Task,Done,0.0,2026-09-16 11:04:20,2026-09-24 13:33:59
+SCRUM-50,Change the en/ett button in level 3 to a field you can fill out,Task,In Progress,5.0,2026-09-16 10:51:26,2026-09-28 13:54:24
+SCRUM-49,Fix issue with language change not affecting instructions,Bug,In Progress,0.0,2026-09-16 10:46:54,2026-09-28 13:23:24
+SCRUM-48,Sprint planning meeting,Task,Done,6.0,2026-09-16 10:43:45,2026-09-21 16:06:21
+SCRUM-47,Fix issue with the educational information page,Bug,In Review,3.0,2026-09-16 10:39:28,2026-09-24 14:14:59
+SCRUM-46,Look through the existing code,Task,To Do,0.0,2026-09-16 10:26:40,2026-09-28 13:34:18
+SCRUM-45,Write Submission,Subtask,Done,0.0,2026-09-14 18:29:10,2026-09-14 18:29:18
+SCRUM-44,Write Submission,Subtask,Done,0.0,2026-09-14 18:28:48,2026-09-14 18:29:01
+SCRUM-43,Write Submission,Subtask,Done,0.0,2026-09-14 18:28:35,2026-09-14 18:28:42
+SCRUM-42,Write Submission,Subtask,Done,0.0,2026-09-14 18:28:17,2026-09-14 18:28:28
+SCRUM-41,Write Submission,Subtask,Done,0.0,2026-09-14 18:28:07,2026-09-14 18:30:21
+SCRUM-40,Attend Meeting,Subtask,Done,0.0,2026-09-14 18:26:58,2026-09-14 18:27:10
+SCRUM-39,Attend Meeting,Subtask,Done,0.0,2026-09-14 18:26:47,2026-09-14 18:27:07
+SCRUM-38,Attend Meeting,Subtask,Done,1.0,2026-09-14 18:26:32,2026-09-25 12:17:19
+SCRUM-37,Attend Meeting,Subtask,Done,0.0,2026-09-14 18:26:05,2026-09-14 18:26:25
+SCRUM-36,"Submit A2, Artefacts",Task,Done,0.0,2026-09-14 17:45:50,2026-09-28 13:34:01
+SCRUM-35,Ethical Considerations,Subtask,To Do,3.0,2026-09-14 16:26:10,2026-09-27 22:42:27
+SCRUM-34,Functional Requirements 2,Subtask,To Do,0.25,2026-09-14 16:25:56,2026-09-25 17:15:26
+SCRUM-33,Functional Requirements 1,Subtask,To Do,1.0,2026-09-14 16:25:41,2026-09-25 17:15:07
+SCRUM-32,Components,Subtask,To Do,0.0,2026-09-14 16:25:35,2026-09-24 14:03:01
+SCRUM-31,Definitions,Subtask,To Do,0.0,2026-09-14 16:25:28,2026-09-24 13:57:18
+SCRUM-30,Scope Statement,Subtask,To Do,0.0,2026-09-14 16:25:21,2026-09-24 14:03:33
+SCRUM-29,User Requirements 2,Subtask,Done,0.0,2026-09-14 14:14:13,2026-09-14 14:17:18
+SCRUM-28,User Requirements 1,Subtask,Done,0.0,2026-09-14 14:14:02,2026-09-14 14:17:06
+SCRUM-27,User Classes,Subtask,Done,2.0,2026-09-14 14:13:58,2026-09-25 12:14:32
+SCRUM-26,Layout and Ethical Concerns,Subtask,Done,0.0,2026-09-14 14:13:52,2026-09-14 14:17:08
+SCRUM-20,Attend Meeting,Subtask,Done,0.0,2026-09-14 14:07:22,2026-09-14 14:08:16
+SCRUM-19,Attend Technical Meeting,Task,Done,0.0,2026-09-14 14:06:09,2026-09-14 14:07:44
+SCRUM-18,Attend Project Management Meeting,Task,Done,0.0,2026-09-14 14:05:54,2026-09-14 14:06:21
+SCRUM-17,"Submit D3, Requirements Specification",Task,Done,12.5,2026-09-14 11:38:16,2026-09-28 13:56:48
+SCRUM-16,Scope Statement,Subtask,Done,0.0,2026-09-14 11:34:01,2026-09-14 14:17:00
+SCRUM-15,Client Meeting (online),Task,Done,0.0,2026-09-14 11:32:26,2026-09-14 18:27:18
+SCRUM-14,"Submit A1, Artefacts",Task,Done,0.0,2026-09-07 12:36:46,2026-09-14 18:29:29
+SCRUM-13,"Submit D2, Requirements Elicitation",Task,Done,0.0,2026-09-07 12:34:14,2026-09-14 14:20:24
+SCRUM-12,"Submit D1, Group Agreement",Task,Done,0.5,2026-09-07 12:31:35,2026-09-25 12:12:32
+SCRUM-11,Revisit the group agreement,Task,Done,0.0,2026-09-04 12:43:07,2026-09-21 16:05:23
+SCRUM-10,Fix issue with level 1,Bug,In Review,2.5,2026-09-04 11:57:26,2026-09-25 12:18:34
+SCRUM-9,Fix duplicate word issue in level 2,Bug,In Progress,0.0,2026-09-04 11:54:17,2026-09-28 13:37:53
+SCRUM-7,Fix case-sensitivity issue,Bug,In Review,0.0,2026-09-04 11:52:58,2026-09-28 13:39:15
+SCRUM-4,Subtask 2.1,Subtask,To Do,0.0,2026-09-02 16:12:55,2026-09-02 16:12:55
