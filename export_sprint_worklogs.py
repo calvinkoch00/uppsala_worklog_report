@@ -243,7 +243,8 @@ def build_star_report():
             "status": fields.get("status", {}).get("name", "Unknown"),
             "timespent_hours": round(total_time_spent / 3600.0, 2),
             "created": fields.get("created", "")[:19].replace("T", " "),
-            "updated": fields.get("updated", "")[:19].replace("T", " ")
+            "updated": fields.get("updated", "")[:19].replace("T", " "),
+            "issue_url": f"https://{JIRA_DOMAIN}/browse/{key}"
         }
 
         # Query worklogs if work was logged

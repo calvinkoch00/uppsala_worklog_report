@@ -154,6 +154,7 @@
     const GH_OWNER = "calvinkoch00";
     const GH_REPO = "uppsala_worklog_report";
     const WORKFLOW_FILE = "jira_report.yml";
+    const JIRA_DOMAIN = "group-six-uppsala.atlassian.net";
     const STORAGE_KEY = "gh_dispatch_token";
 
     let rawWorklogs = [];
@@ -531,7 +532,11 @@
           <td class="px-4 py-2.5"><span class="px-2 py-0.5 rounded text-[11px] bg-blue-50 text-blue-700 font-medium">${r.sprint_by_date || ''}</span></td>
           <td class="px-4 py-2.5 text-slate-600">${r.calendar_week || ''}</td>
           <td class="px-4 py-2.5 font-medium text-slate-900">${r.worklog_author || ''}</td>
-          <td class="px-4 py-2.5 font-mono font-medium text-blue-600">${r.issue_key || ''}</td>
+          <td class="px-4 py-2.5 font-mono font-medium">
+            <a href="https://${JIRA_DOMAIN}/browse/${r.issue_key}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 hover:underline">
+              ${r.issue_key || ''}
+            </a>
+          </td>
           <td class="px-4 py-2.5 text-right font-bold text-slate-900">${Number(r.hours_logged).toFixed(2)}</td>
           <td class="px-4 py-2.5 text-slate-500 truncate max-w-xs" title="${r.comment || ''}">${r.comment || '-'}</td>
         </tr>
