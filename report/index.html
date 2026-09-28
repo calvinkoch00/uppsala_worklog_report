@@ -10,28 +10,41 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <style>
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
 
-  <!-- Navigation Bar -->
+  <!-- Header -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4">
       <div class="flex items-center space-x-3">
         <div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">J</div>
         <div>
-          <h1 class="text-lg font-bold tracking-tight text-slate-900 leading-none">Sprint Worklog Dashboard</h1>
+          <h1 class="text-lg font-bold tracking-tight text-slate-900 leading-none">Sprint & Weekly Worklog Dashboard</h1>
           <p class="text-xs text-slate-500 mt-1">Automated Team Capacity & Worklog Tracking</p>
         </div>
       </div>
       <div class="flex items-center gap-3">
-        <!-- Download Source Excel -->
         <a href="../sprint_worklog_report.xlsx" download
            class="inline-flex items-center px-3.5 py-2 text-xs font-semibold rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-sm transition">
           <svg class="w-4 h-4 mr-1.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
           Export Source Excel (.xlsx)
         </a>
-
-        <!-- Trigger GitHub Actions Refresh Button -->
         <button id="refresh-btn" onclick="triggerWorkflow()"
                 class="inline-flex items-center px-3.5 py-2 text-xs font-semibold rounded-md text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition">
           <svg id="refresh-spinner" class="hidden animate-spin -ml-0.5 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
@@ -41,7 +54,7 @@
     </div>
   </header>
 
-  <!-- Main Content -->
+  <!-- Main Container -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full space-y-8">
 
     <!-- KPI Metric Cards -->
@@ -59,35 +72,35 @@
         <p id="kpi-total-issues" class="text-2xl font-bold text-slate-900 mt-1">--</p>
       </div>
       <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
-        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Worklog Entries</p>
-        <p id="kpi-total-logs" class="text-2xl font-bold text-slate-900 mt-1">--</p>
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Target Range</p>
+        <p class="text-2xl font-bold text-emerald-600 mt-1">5 – 8 hrs</p>
       </div>
     </div>
 
-    <!-- Charts Section (Side-by-side grouped bars) -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm flex flex-col">
-        <h2 class="text-sm font-semibold text-slate-900 mb-2">Hours Logged per Sprint (by Date)</h2>
-        <div class="relative flex-1 min-h-[340px]">
-          <canvas id="sprintChart"></canvas>
+    <!-- Unified Full-Width Chart with Contextual Horizontal Scroll -->
+    <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm flex flex-col">
+      <div class="flex items-center justify-between mb-2">
+        <div>
+          <h2 class="text-base font-semibold text-slate-900">Weekly Hours Logged & Sprint Alignment</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Scroll wheel over the bar area moves horizontally; scrolling over labels moves page vertically</p>
         </div>
       </div>
-      <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm flex flex-col">
-        <h2 class="text-sm font-semibold text-slate-900 mb-2">Hours per Calendar Week</h2>
-        <div class="relative flex-1 min-h-[340px]">
-          <canvas id="weeklyChart"></canvas>
+
+      <!-- Outer Scrollable Wrapper -->
+      <div id="chart-scroll-wrapper" class="w-full overflow-x-auto custom-scrollbar pt-2 pb-2">
+        <div id="chart-inner-container" class="h-[540px] min-w-full">
+          <canvas id="unifiedChart"></canvas>
         </div>
       </div>
     </div>
 
-    <!-- Interactive Data Explorer Table -->
+    <!-- Data Explorer Table -->
     <div class="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
       <div class="p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 class="text-base font-semibold text-slate-900">Worklog Entries (Fact Table)</h2>
-          <p class="text-xs text-slate-500 mt-0.5">Atomic logged time down to the exact second</p>
+          <p class="text-xs text-slate-500 mt-0.5">Granular logs mapped to dates, weeks, and sprints</p>
         </div>
-        <!-- Table Filters -->
         <div class="flex flex-wrap items-center gap-3">
           <select id="filter-sprint" onchange="renderTable()" class="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:ring-1 focus:ring-blue-500">
             <option value="">All Sprints</option>
@@ -100,7 +113,6 @@
         </div>
       </div>
 
-      <!-- Table Body -->
       <div class="overflow-x-auto max-h-[460px]">
         <table class="min-w-full text-left text-xs divide-y divide-slate-200">
           <thead class="bg-slate-50 sticky top-0 z-10 font-semibold text-slate-600">
@@ -126,17 +138,38 @@
   </main>
 
   <script>
-    // GitHub API Configuration for Workflow Dispatch
     const GH_OWNER = "calvin-koch";
     const GH_REPO = "uppsala_worklog_report";
     const WORKFLOW_FILE = "jira_report.yml";
 
     let rawWorklogs = [];
+    let authorFirstnames = {};
+    let chartInstance = null;
 
-    // Register ChartDataLabels plugin
     Chart.register(ChartDataLabels);
 
-    // CSV Loader Helper
+    const scrollWrapper = document.getElementById('chart-scroll-wrapper');
+    const canvas = document.getElementById('unifiedChart');
+
+    // Contextual scroll: only intercept when mouse is inside the bar plotting area
+    scrollWrapper.addEventListener('wheel', (evt) => {
+      if (!chartInstance || !chartInstance.chartArea) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = evt.clientX - rect.left;
+      const mouseY = evt.clientY - rect.top;
+
+      const ca = chartInstance.chartArea;
+
+      // Check if mouse is in the active bar charting region
+      const isInBarArea = mouseX >= ca.left && mouseX <= ca.right && mouseY >= ca.top && mouseY <= ca.bottom;
+
+      if (isInBarArea && evt.deltaY !== 0) {
+        evt.preventDefault();
+        scrollWrapper.scrollLeft += evt.deltaY * 1.5;
+      }
+    }, { passive: false });
+
     function loadCSV(path) {
       return new Promise((resolve) => {
         Papa.parse(path, {
@@ -150,28 +183,22 @@
       });
     }
 
-    // Firstname lookup map
-    let authorFirstnames = {};
-
     async function initDashboard() {
-      // Load dimensions along with facts and summaries
-      const [facts, sprintSummary, weekSummary, dimAuthors] = await Promise.all([
+      const [facts, weekSummary, dimAuthors, dimSprints] = await Promise.all([
         loadCSV('../csv/Fact_Timelogs.csv'),
-        loadCSV('../csv/Overview_Sprint.csv'),
         loadCSV('../csv/Overview_Weekly.csv'),
-        loadCSV('../csv/Dim_Authors.csv')
+        loadCSV('../csv/Dim_Authors.csv'),
+        loadCSV('../csv/Dim_Sprints.csv')
       ]);
 
       rawWorklogs = facts;
 
-      // Populate firstname dictionary (fallback to first word of displayName)
       dimAuthors.forEach(a => {
         if (a.display_name) {
           authorFirstnames[a.display_name] = a.firstname || a.display_name.trim().split(" ")[0];
         }
       });
 
-      // Calculate Metrics
       const totalHours = rawWorklogs.reduce((sum, r) => sum + (Number(r.hours_logged) || 0), 0);
       const uniqueAuthors = new Set(rawWorklogs.map(r => r.worklog_author)).size;
       const uniqueIssues = new Set(rawWorklogs.map(r => r.issue_key)).size;
@@ -179,9 +206,7 @@
       document.getElementById("kpi-total-hours").innerText = totalHours.toFixed(2) + " h";
       document.getElementById("kpi-total-authors").innerText = uniqueAuthors;
       document.getElementById("kpi-total-issues").innerText = uniqueIssues;
-      document.getElementById("kpi-total-logs").innerText = rawWorklogs.length;
 
-      // Populate Dropdowns
       const sprints = [...new Set(rawWorklogs.map(r => r.sprint_by_date))].filter(Boolean).sort();
       const authors = [...new Set(rawWorklogs.map(r => r.worklog_author))].filter(Boolean).sort();
 
@@ -191,126 +216,38 @@
       const authorSelect = document.getElementById("filter-author");
       authors.forEach(a => authorSelect.innerHTML += `<option value="${a}">${a}</option>`);
 
-      // Initialize Visualizations
-      buildCharts(sprintSummary, weekSummary);
+      buildUnifiedChart(weekSummary, dimSprints);
       renderTable();
     }
 
-    function buildCharts(sprintData, weekData) {
+    function buildUnifiedChart(weekData, sprintList) {
       const palette = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'];
 
-      // Custom Plugin: Renders firstname rotated 90 deg counterclockwise under each bar
-      const verticalFirstnamesPlugin = {
-        id: 'verticalFirstnames',
-        afterDraw(chart) {
-          const { ctx } = chart;
-          ctx.save();
-          ctx.font = '10px sans-serif';
-          ctx.fillStyle = '#64748b'; // slate-500
-          ctx.textAlign = 'right';
-          ctx.textBaseline = 'middle';
+      const weekLabels = [...new Set(weekData.map(d => d.calendar_week))].filter(Boolean).sort();
+      const authors = [...new Set(weekData.map(d => d.worklog_author))].filter(Boolean);
 
-          chart.data.datasets.forEach((dataset, datasetIndex) => {
-            const meta = chart.getDatasetMeta(datasetIndex);
-            if (meta.hidden) return;
+      const minRequiredWidth = Math.max(1000, weekLabels.length * 240);
+      document.getElementById('chart-inner-container').style.minWidth = `${minRequiredWidth}px`;
 
-            const fullName = dataset.label;
-            const firstName = authorFirstnames[fullName] || fullName.trim().split(" ")[0];
-
-            meta.data.forEach((bar, index) => {
-              const val = dataset.data[index];
-              // Only draw author name if bar exists and has logged hours
-              if (val > 0) {
-                const x = bar.x;
-                const y = chart.scales.y.bottom + 8; // Start 8px below bottom baseline
-
-                ctx.save();
-                ctx.translate(x, y);
-                ctx.rotate(-Math.PI / 3); // 90 degrees counterclockwise
-                ctx.fillText(firstName, 0, 0);
-                ctx.restore();
-              }
-            });
-          });
-          ctx.restore();
-        }
-      };
-
-      const getCommonOptions = (yAxisTitle) => ({
-        responsive: true,
-        maintainAspectRatio: false,
-        layout: {
-          padding: {
-            top: 24,
-            bottom: 30 // Extra room for the rotated names
-          }
-        },
-        scales: {
-          x: {
-            stacked: false,
-            grid: { display: false },
-            ticks: {
-              padding: 55, // Pushes sprint/week label down beneath vertical names
-              font: { size: 12, weight: 'bold' },
-              color: '#1e293b'
-            }
-          },
-          y: {
-            stacked: false,
-            beginAtZero: true,
-            grid: { color: '#f1f5f9' },
-            title: { display: true, text: yAxisTitle, color: '#64748b' },
-            ticks: { color: '#64748b' }
-          }
-        },
-        plugins: {
-          legend: {
-            display: false // Legend disabled as requested
-          },
-          tooltip: {
-            callbacks: {
-              title: (items) => items[0].dataset.label, // Shows full author name
-              label: (context) => `${context.raw} hrs`
-            }
-          },
-          datalabels: {
-            anchor: 'end',
-            align: 'top',
-            offset: 2,
-            color: '#1e293b',
-            font: { size: 10, weight: 'bold' },
-            formatter: (val) => (val > 0 ? val : ''),
-            clip: false
-          }
+      const weekToSprintMap = {};
+      rawWorklogs.forEach(r => {
+        if (r.calendar_week && r.sprint_by_date && !weekToSprintMap[r.calendar_week]) {
+          weekToSprintMap[r.calendar_week] = r.sprint_by_date;
         }
       });
 
-      // 1. Sprint Chart
-      const sprintLabels = [...new Set(sprintData.map(d => d.sprint_by_date))];
-      const sprintAuthors = [...new Set(sprintData.map(d => d.worklog_author))];
-
-      const sprintDatasets = sprintAuthors.map((author, idx) => ({
-        label: author,
-        backgroundColor: palette[idx % palette.length],
-        borderRadius: 3,
-        data: sprintLabels.map(s => {
-          const entry = sprintData.find(d => d.sprint_by_date === s && d.worklog_author === author);
-          return entry ? Number(entry.total_hours) : 0;
-        })
-      }));
-
-      new Chart(document.getElementById('sprintChart'), {
-        type: 'bar',
-        data: { labels: sprintLabels, datasets: sprintDatasets },
-        options: getCommonOptions('Hours Logged'),
-        plugins: [verticalFirstnamesPlugin]
+      const sprintGroups = [];
+      weekLabels.forEach((w, idx) => {
+        const sName = weekToSprintMap[w] || "Other";
+        const lastGroup = sprintGroups[sprintGroups.length - 1];
+        if (lastGroup && lastGroup.name === sName) {
+          lastGroup.endIndex = idx;
+        } else {
+          sprintGroups.push({ name: sName, startIndex: idx, endIndex: idx });
+        }
       });
 
-      // 2. Weekly Chart
-      const weekLabels = [...new Set(weekData.map(d => d.calendar_week))].sort();
-      const weekAuthors = [...new Set(weekData.map(d => d.worklog_author))];
-
-      const weekDatasets = weekAuthors.map((author, idx) => ({
+      const datasets = authors.map((author, idx) => ({
         label: author,
         backgroundColor: palette[idx % palette.length],
         borderRadius: 3,
@@ -320,12 +257,201 @@
         })
       }));
 
-      new Chart(document.getElementById('weeklyChart'), {
+      // Optimal Band Plugin
+      const optimalCapacityZonePlugin = {
+        id: 'optimalCapacityZone',
+        beforeDraw(chart) {
+          const { ctx, chartArea, scales: { y } } = chart;
+          if (!chartArea) return;
+
+          const yTop = y.getPixelForValue(8);
+          const yBottom = y.getPixelForValue(5);
+
+          ctx.save();
+          // Shaded band
+          ctx.fillStyle = 'rgba(16, 185, 129, 0.07)';
+          ctx.fillRect(chartArea.left, yTop, chartArea.width, yBottom - yTop);
+
+          // Dotted guide lines
+          ctx.strokeStyle = '#94a3b8';
+          ctx.lineWidth = 1;
+          ctx.setLineDash([4, 4]);
+
+          ctx.beginPath();
+          ctx.moveTo(chartArea.left, yTop);
+          ctx.lineTo(chartArea.right, yTop);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(chartArea.left, yBottom);
+          ctx.lineTo(chartArea.right, yBottom);
+          ctx.stroke();
+
+          // External labels positioned right of chart area
+          ctx.setLineDash([]);
+          ctx.fillStyle = '#64748b';
+          ctx.font = 'bold 11px sans-serif';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('Max 8', chartArea.right + 10, yTop);
+          ctx.fillText('Min 5', chartArea.right + 10, yBottom);
+          ctx.restore();
+        }
+      };
+
+      // Hierarchical Axis Plugin with precision name anchoring
+      const hierarchicalAxisPlugin = {
+        id: 'hierarchicalAxis',
+        afterDraw(chart) {
+          const { ctx, chartArea, scales: { x, y } } = chart;
+          ctx.save();
+
+          // Anchor names so last character ends just below bar bottom
+          ctx.font = '10px sans-serif';
+          ctx.fillStyle = '#64748b';
+          ctx.textAlign = 'right'; // Anchors the end (last character) to rotation origin
+          ctx.textBaseline = 'middle';
+
+          chart.data.datasets.forEach((dataset, datasetIdx) => {
+            const meta = chart.getDatasetMeta(datasetIdx);
+            const fullName = dataset.label;
+            const firstName = authorFirstnames[fullName] || fullName.trim().split(" ")[0];
+
+            meta.data.forEach((bar, index) => {
+              const val = dataset.data[index];
+              if (val > 0) {
+                const posX = bar.x;
+                const posY = y.bottom + 6; // Crisp 6px buffer below baseline
+
+                ctx.save();
+                ctx.translate(posX, posY);
+                ctx.rotate(-Math.PI / 3); // 60 deg slanted up-right
+                ctx.fillText(firstName, 0, 0); // Last letter ends at (0,0)
+                ctx.restore();
+              }
+            });
+          });
+
+          // Boxed Calendar Weeks (Level 2)
+          const weekBoxY = y.bottom + 70;
+          const weekBoxHeight = 24;
+
+          ctx.font = '600 11px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.strokeStyle = '#e2e8f0';
+          ctx.lineWidth = 1;
+
+          weekLabels.forEach((week, idx) => {
+            let leftX = chartArea.right;
+            let rightX = chartArea.left;
+
+            chart.data.datasets.forEach(ds => {
+              const bar = chart.getDatasetMeta(chart.data.datasets.indexOf(ds)).data[idx];
+              if (bar) {
+                leftX = Math.min(leftX, bar.x - bar.width / 2);
+                rightX = Math.max(rightX, bar.x + bar.width / 2);
+              }
+            });
+
+            if (leftX >= rightX) {
+              const center = x.getPixelForTick(idx);
+              leftX = center - 40;
+              rightX = center + 40;
+            }
+
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(leftX - 4, weekBoxY, (rightX - leftX) + 8, weekBoxHeight);
+            ctx.strokeRect(leftX - 4, weekBoxY, (rightX - leftX) + 8, weekBoxHeight);
+
+            ctx.fillStyle = '#334155';
+            ctx.fillText(week, (leftX + rightX) / 2, weekBoxY + (weekBoxHeight / 2));
+          });
+
+          // Boxed Sprints (Level 3)
+          const sprintBoxY = weekBoxY + weekBoxHeight + 8;
+          const sprintBoxHeight = 28;
+
+          sprintGroups.forEach(grp => {
+            let startX = chartArea.right;
+            let endX = chartArea.left;
+
+            for (let i = grp.startIndex; i <= grp.endIndex; i++) {
+              chart.data.datasets.forEach(ds => {
+                const bar = chart.getDatasetMeta(chart.data.datasets.indexOf(ds)).data[i];
+                if (bar) {
+                  startX = Math.min(startX, bar.x - bar.width / 2);
+                  endX = Math.max(endX, bar.x + bar.width / 2);
+                }
+              });
+            }
+
+            if (startX < endX) {
+              ctx.fillStyle = '#ffffff';
+              ctx.fillRect(startX - 6, sprintBoxY, (endX - startX) + 12, sprintBoxHeight);
+              ctx.strokeRect(startX - 6, sprintBoxY, (endX - startX) + 12, sprintBoxHeight);
+
+              ctx.font = 'bold 12px sans-serif';
+              ctx.fillStyle = '#1e293b';
+              ctx.fillText(grp.name, (startX + endX) / 2, sprintBoxY + (sprintBoxHeight / 2));
+            }
+          });
+
+          ctx.restore();
+        }
+      };
+
+      chartInstance = new Chart(canvas, {
         type: 'bar',
-        data: { labels: weekLabels, datasets: weekDatasets },
-        options: getCommonOptions('Hours Logged'),
-        plugins: [verticalFirstnamesPlugin]
+        data: { labels: weekLabels, datasets: datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              top: 25,
+              right: 65,  // Space for external "Min 5" & "Max 8" labels
+              bottom: 135 // Space for slanted names, week boxes, and sprint boxes
+            }
+          },
+          scales: {
+            x: {
+              stacked: false,
+              grid: { display: false },
+              ticks: { display: false }
+            },
+            y: {
+              stacked: false,
+              beginAtZero: true,
+              suggestedMax: 10,
+              grid: { color: '#f8fafc' },
+              title: { display: true, text: 'Hours Logged / Person', color: '#64748b' },
+              ticks: { color: '#64748b', stepSize: 2 }
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                title: (items) => `${items[0].dataset.label} (${items[0].label})`,
+                label: (context) => `${context.raw} hrs`
+              }
+            },
+            datalabels: {
+              anchor: 'end',
+              align: 'top',
+              offset: 2,
+              color: '#0f172a',
+              font: { size: 10, weight: 'bold' },
+              formatter: (val) => (val > 0 ? val : ''),
+              clip: false
+            }
+          }
+        },
+        plugins: [optimalCapacityZonePlugin, hierarchicalAxisPlugin]
       });
+
+      scrollWrapper.scrollLeft = scrollWrapper.scrollWidth;
     }
 
     function renderTable() {
