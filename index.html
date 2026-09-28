@@ -39,16 +39,24 @@
           <p class="text-xs text-slate-500 mt-1">Automated Team Capacity & Worklog Tracking</p>
         </div>
       </div>
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
         <a href="sprint_worklog_report.xlsx" download
            class="inline-flex items-center px-3.5 py-2 text-xs font-semibold rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-sm transition">
           <svg class="w-4 h-4 mr-1.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-          Export Source Excel (.xlsx)
+          Export Excel (.xlsx)
         </a>
+
+        <!-- Trigger Button -->
         <button id="refresh-btn" onclick="triggerWorkflow()"
                 class="inline-flex items-center px-3.5 py-2 text-xs font-semibold rounded-md text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition">
           <svg id="refresh-spinner" class="hidden animate-spin -ml-0.5 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
-          Refresh Data via Actions
+          <span id="refresh-btn-label">Refresh Data</span>
+        </button>
+
+        <!-- Reset / Change Cached Token Button (visible when a token is cached) -->
+        <button id="reset-token-btn" onclick="resetStoredToken()" title="Change or remove stored token"
+                class="hidden p-2 text-xs font-semibold rounded-md border border-slate-300 bg-white hover:bg-slate-100 text-slate-500 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
         </button>
       </div>
     </div>
@@ -141,6 +149,7 @@
     const GH_OWNER = "calvin-koch";
     const GH_REPO = "uppsala_worklog_report";
     const WORKFLOW_FILE = "jira_report.yml";
+    const STORAGE_KEY = "gh_dispatch_token";
 
     let rawWorklogs = [];
     let authorFirstnames = {};
@@ -160,8 +169,6 @@
       const mouseY = evt.clientY - rect.top;
 
       const ca = chartInstance.chartArea;
-
-      // Check if mouse is in the active bar charting region
       const isInBarArea = mouseX >= ca.left && mouseX <= ca.right && mouseY >= ca.top && mouseY <= ca.bottom;
 
       if (isInBarArea && evt.deltaY !== 0) {
@@ -184,7 +191,6 @@
     }
 
     async function initDashboard() {
-      // Local root-level CSV file paths
       const [facts, weekSummary, dimAuthors, dimSprints] = await Promise.all([
         loadCSV('csv/Fact_Timelogs.csv'),
         loadCSV('csv/Overview_Weekly.csv'),
@@ -230,16 +236,33 @@
       const minRequiredWidth = Math.max(1000, weekLabels.length * 240);
       document.getElementById('chart-inner-container').style.minWidth = `${minRequiredWidth}px`;
 
-      const weekToSprintMap = {};
-      rawWorklogs.forEach(r => {
-        if (r.calendar_week && r.sprint_by_date && !weekToSprintMap[r.calendar_week]) {
-          weekToSprintMap[r.calendar_week] = r.sprint_by_date;
+      // Map calendar week string directly to its sprint using Dim_Sprints boundaries
+      const getSprintForWeek = (isoWeekStr) => {
+        const [year, weekNum] = isoWeekStr.split("-W").map(Number);
+        const simpleDate = new Date(Date.UTC(year, 0, 1 + (weekNum - 1) * 7));
+        const dayOfWeek = simpleDate.getUTCDay();
+        const monday = new Date(simpleDate);
+        monday.setUTCDate(simpleDate.getUTCDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+        monday.setUTCHours(12, 0, 0, 0);
+
+        for (const sp of sprintList) {
+          if (sp.effective_start_date && sp.effective_end_date) {
+            const start = new Date(sp.effective_start_date.replace(" ", "T") + "Z");
+            const end = new Date(sp.effective_end_date.replace(" ", "T") + "Z");
+            if (monday >= start && monday <= end) {
+              return sp.sprint_name;
+            }
+          }
         }
-      });
+
+        // Fallback to facts match if available
+        const factMatch = rawWorklogs.find(r => r.calendar_week === isoWeekStr && r.sprint_by_date && r.sprint_by_date !== "Outside Sprints");
+        return factMatch ? factMatch.sprint_by_date : "SCRUM Sprint " + Math.ceil(weekNum / 2);
+      };
 
       const sprintGroups = [];
       weekLabels.forEach((w, idx) => {
-        const sName = weekToSprintMap[w] || "Other";
+        const sName = getSprintForWeek(w);
         const lastGroup = sprintGroups[sprintGroups.length - 1];
         if (lastGroup && lastGroup.name === sName) {
           lastGroup.endIndex = idx;
@@ -484,45 +507,76 @@
       `).join("");
     }
 
+    function updateTokenUI() {
+      const resetBtn = document.getElementById("reset-token-btn");
+      if (!resetBtn) return;
+      if (localStorage.getItem(STORAGE_KEY)) {
+        resetBtn.classList.remove("hidden");
+      } else {
+        resetBtn.classList.add("hidden");
+      }
+    }
+
+    function resetStoredToken() {
+      if (confirm("Remove your saved token from this browser?")) {
+        localStorage.removeItem(STORAGE_KEY);
+        updateTokenUI();
+        alert("Saved token removed. You will be prompted for a token on the next refresh.");
+      }
+    }
+
     async function triggerWorkflow() {
-      let pat = localStorage.getItem("gh_pat");
-      if (!pat) {
-        pat = prompt("Enter a GitHub Personal Access Token (with repo actions:write permission) to trigger the refresh:");
-        if (pat) localStorage.setItem("gh_pat", pat);
-        else return;
+      let token = localStorage.getItem(STORAGE_KEY);
+
+      if (!token) {
+        token = prompt("Please enter the project refresh token (shared via Discord):");
+        if (!token || !token.trim()) return;
+        token = token.trim();
+        localStorage.setItem(STORAGE_KEY, token);
+        updateTokenUI();
       }
 
       const spinner = document.getElementById("refresh-spinner");
       const btn = document.getElementById("refresh-btn");
+      const btnLabel = document.getElementById("refresh-btn-label");
+
       spinner.classList.remove("hidden");
       btn.disabled = true;
+      btnLabel.innerText = "Triggering...";
 
       try {
         const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/actions/workflows/${WORKFLOW_FILE}/dispatches`, {
           method: "POST",
           headers: {
             "Accept": "application/vnd.github+json",
-            "Authorization": `Bearer ${pat}`
+            "Authorization": `Bearer ${token}`
           },
           body: JSON.stringify({ ref: "main" })
         });
 
         if (res.status === 204) {
-          alert("GitHub Action dispatched successfully! The data will refresh in 1-2 minutes once the pipeline completes.");
+          alert("✓ Refresh action queued successfully! GitHub is pulling fresh Jira data and updating the charts. Please refresh this page in ~1-2 minutes.");
+        } else if (res.status === 401 || res.status === 403) {
+          localStorage.removeItem(STORAGE_KEY);
+          updateTokenUI();
+          alert("The token entered is either invalid or expired. The saved token has been cleared. Please click Refresh again to enter a valid token.");
         } else {
-          const err = await res.json();
+          const err = await res.json().catch(() => ({}));
           alert("Error triggering workflow: " + (err.message || res.statusText));
-          localStorage.removeItem("gh_pat");
         }
       } catch (e) {
-        alert("Failed to connect to GitHub API: " + e.message);
+        alert("Network connection error: " + e.message);
       } finally {
         spinner.classList.add("hidden");
         btn.disabled = false;
+        btnLabel.innerText = "Refresh Data";
       }
     }
 
-    window.addEventListener("DOMContentLoaded", initDashboard);
+    window.addEventListener("DOMContentLoaded", () => {
+      initDashboard();
+      updateTokenUI();
+    });
   </script>
 </body>
 </html>
