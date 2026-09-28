@@ -2,8 +2,11 @@ name: Generate Jira Sprint Worklog Report
 
 on:
   schedule:
-    - cron: '0 7 * * 1' # Every Monday at 07:00 UTC
-  workflow_dispatch:      # Allows button trigger from UI / API
+    # Summer schedule (April through October): UTC 03:00, 10:00, 15:00
+    - cron: '0 3,10,15 * 4-10 *'
+    # Winter schedule (November through March): UTC 04:00, 11:00, 16:00
+    - cron: '0 4,11,16 * 1-3,11-12 *'
+  workflow_dispatch:
 
 permissions:
   contents: write # Needed to commit back to the repo
