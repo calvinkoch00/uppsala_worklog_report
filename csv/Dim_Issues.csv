@@ -3,7 +3,7 @@ SCRUM-78,Risk analysis and planning,Subtask,To Do,0.0,2026-09-28 13:38:45,2026-0
 SCRUM-77,List of potential risks,Subtask,To Do,0.0,2026-09-28 13:37:59,2026-09-28 13:40:14,https://group-six-uppsala.atlassian.net/browse/SCRUM-77
 SCRUM-76,Introduction,Subtask,To Do,0.0,2026-09-28 13:37:40,2026-09-28 13:42:36,https://group-six-uppsala.atlassian.net/browse/SCRUM-76
 SCRUM-75,Sprint 3 planning meeting,Task,To Do,4.0,2026-09-25 10:49:06,2026-09-28 14:00:39,https://group-six-uppsala.atlassian.net/browse/SCRUM-75
-SCRUM-74,Look through options for time tracking,Task,To Do,0.0,2026-09-25 10:40:35,2026-09-25 10:40:35,https://group-six-uppsala.atlassian.net/browse/SCRUM-74
+SCRUM-74,Look through options for time tracking,Task,To Do,1.0,2026-09-25 10:40:35,2026-09-28 22:30:53,https://group-six-uppsala.atlassian.net/browse/SCRUM-74
 SCRUM-73,Prepare for Project Management and Tech Lead meeting,Task,To Do,0.0,2026-09-25 10:32:10,2026-09-28 13:40:03,https://group-six-uppsala.atlassian.net/browse/SCRUM-73
 SCRUM-72,Design Level 4,Task,To Do,0.0,2026-09-23 14:07:23,2026-09-23 14:07:33,https://group-six-uppsala.atlassian.net/browse/SCRUM-72
 SCRUM-71,Attend Technical Lead meeting 3,Task,To Do,0.0,2026-09-23 14:05:18,2026-09-28 13:39:58,https://group-six-uppsala.atlassian.net/browse/SCRUM-71
@@ -55,11 +55,11 @@ SCRUM-20,Attend Meeting,Subtask,Done,0.0,2026-09-14 14:07:22,2026-09-14 14:08:16
 SCRUM-19,Attend Technical Meeting,Task,Done,0.0,2026-09-14 14:06:09,2026-09-14 14:07:44,https://group-six-uppsala.atlassian.net/browse/SCRUM-19
 SCRUM-18,Attend Project Management Meeting,Task,Done,0.0,2026-09-14 14:05:54,2026-09-14 14:06:21,https://group-six-uppsala.atlassian.net/browse/SCRUM-18
 SCRUM-17,"Submit D3, Requirements Specification",Task,Done,18.0,2026-09-14 11:38:16,2026-09-28 22:23:47,https://group-six-uppsala.atlassian.net/browse/SCRUM-17
-SCRUM-16,Scope Statement,Subtask,Done,0.0,2026-09-14 11:34:01,2026-09-14 14:17:00,https://group-six-uppsala.atlassian.net/browse/SCRUM-16
-SCRUM-15,Client Meeting (online),Task,Done,0.5,2026-09-14 11:32:26,2026-09-28 22:27:42,https://group-six-uppsala.atlassian.net/browse/SCRUM-15
+SCRUM-16,Scope Statement,Subtask,Done,1.0,2026-09-14 11:34:01,2026-09-28 22:35:13,https://group-six-uppsala.atlassian.net/browse/SCRUM-16
+SCRUM-15,Client Meeting (online),Task,Done,0.5,2026-09-14 11:32:26,2026-09-28 22:28:42,https://group-six-uppsala.atlassian.net/browse/SCRUM-15
 SCRUM-14,"Submit A1, Artefacts",Task,Done,0.0,2026-09-07 12:36:46,2026-09-14 18:29:29,https://group-six-uppsala.atlassian.net/browse/SCRUM-14
 SCRUM-13,"Submit D2, Requirements Elicitation",Task,Done,0.0,2026-09-07 12:34:14,2026-09-14 14:20:24,https://group-six-uppsala.atlassian.net/browse/SCRUM-13
-SCRUM-12,"Submit D1, Group Agreement",Task,Done,0.5,2026-09-07 12:31:35,2026-09-25 12:12:32,https://group-six-uppsala.atlassian.net/browse/SCRUM-12
+SCRUM-12,"Submit D1, Group Agreement",Task,Done,1.5,2026-09-07 12:31:35,2026-09-28 22:30:22,https://group-six-uppsala.atlassian.net/browse/SCRUM-12
 SCRUM-11,Revisit the group agreement,Task,Done,0.0,2026-09-04 12:43:07,2026-09-21 16:05:23,https://group-six-uppsala.atlassian.net/browse/SCRUM-11
 SCRUM-10,Fix issue with level 1,Bug,In Review,2.5,2026-09-04 11:57:26,2026-09-25 12:18:34,https://group-six-uppsala.atlassian.net/browse/SCRUM-10
 SCRUM-9,Fix duplicate word issue in level 2,Bug,In Progress,0.0,2026-09-04 11:54:17,2026-09-28 13:37:53,https://group-six-uppsala.atlassian.net/browse/SCRUM-9
