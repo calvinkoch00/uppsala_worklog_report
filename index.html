@@ -36,7 +36,12 @@
         <div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">J</div>
         <div>
           <h1 class="text-lg font-bold tracking-tight text-slate-900 leading-none">Sprint & Weekly Worklog Dashboard</h1>
-          <p class="text-xs text-slate-500 mt-1">Automated Team Capacity & Worklog Tracking</p>
+          <div class="flex items-center gap-2 mt-1">
+            <p class="text-xs text-slate-500">Automated Team Capacity & Worklog Tracking</p>
+            <span class="text-slate-300">•</span>
+            <!-- Last Refreshed Label -->
+            <p id="last-refresh-label" class="text-xs text-slate-400">Checking last refresh...</p>
+          </div>
         </div>
       </div>
       <div class="flex items-center gap-2">
@@ -190,7 +195,33 @@
       });
     }
 
+    async function updateLastRefreshedTime() {
+      const label = document.getElementById("last-refresh-label");
+      try {
+        // Send a lightweight HEAD request to inspect file metadata
+        const res = await fetch('csv/Fact_Timelogs.csv', { method: 'HEAD', cache: 'no-cache' });
+        const lastMod = res.headers.get('Last-Modified');
+
+        if (lastMod) {
+          const dt = new Date(lastMod);
+          const day = String(dt.getDate()).padStart(2, '0');
+          const month = String(dt.getMonth() + 1).padStart(2, '0');
+          const year = dt.getFullYear();
+          const hours = String(dt.getHours()).padStart(2, '0');
+          const minutes = String(dt.getMinutes()).padStart(2, '0');
+
+          label.innerText = `Last refreshed on ${day}.${month}.${year} at ${hours}:${minutes}`;
+        } else {
+          label.innerText = "";
+        }
+      } catch (e) {
+        label.innerText = "";
+      }
+    }
+
     async function initDashboard() {
+      updateLastRefreshedTime();
+
       const [facts, weekSummary, dimAuthors, dimSprints] = await Promise.all([
         loadCSV('csv/Fact_Timelogs.csv'),
         loadCSV('csv/Overview_Weekly.csv'),
