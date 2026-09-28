@@ -40,7 +40,7 @@
         </div>
       </div>
       <div class="flex items-center gap-3">
-        <a href="../sprint_worklog_report.xlsx" download
+        <a href="sprint_worklog_report.xlsx" download
            class="inline-flex items-center px-3.5 py-2 text-xs font-semibold rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-sm transition">
           <svg class="w-4 h-4 mr-1.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
           Export Source Excel (.xlsx)
@@ -184,11 +184,12 @@
     }
 
     async function initDashboard() {
+      // Local root-level CSV file paths
       const [facts, weekSummary, dimAuthors, dimSprints] = await Promise.all([
-        loadCSV('../csv/Fact_Timelogs.csv'),
-        loadCSV('../csv/Overview_Weekly.csv'),
-        loadCSV('../csv/Dim_Authors.csv'),
-        loadCSV('../csv/Dim_Sprints.csv')
+        loadCSV('csv/Fact_Timelogs.csv'),
+        loadCSV('csv/Overview_Weekly.csv'),
+        loadCSV('csv/Dim_Authors.csv'),
+        loadCSV('csv/Dim_Sprints.csv')
       ]);
 
       rawWorklogs = facts;
@@ -268,11 +269,9 @@
           const yBottom = y.getPixelForValue(5);
 
           ctx.save();
-          // Shaded band
           ctx.fillStyle = 'rgba(16, 185, 129, 0.07)';
           ctx.fillRect(chartArea.left, yTop, chartArea.width, yBottom - yTop);
 
-          // Dotted guide lines
           ctx.strokeStyle = '#94a3b8';
           ctx.lineWidth = 1;
           ctx.setLineDash([4, 4]);
@@ -287,7 +286,6 @@
           ctx.lineTo(chartArea.right, yBottom);
           ctx.stroke();
 
-          // External labels positioned right of chart area
           ctx.setLineDash([]);
           ctx.fillStyle = '#64748b';
           ctx.font = 'bold 11px sans-serif';
@@ -306,10 +304,9 @@
           const { ctx, chartArea, scales: { x, y } } = chart;
           ctx.save();
 
-          // Anchor names so last character ends just below bar bottom
           ctx.font = '10px sans-serif';
           ctx.fillStyle = '#64748b';
-          ctx.textAlign = 'right'; // Anchors the end (last character) to rotation origin
+          ctx.textAlign = 'right';
           ctx.textBaseline = 'middle';
 
           chart.data.datasets.forEach((dataset, datasetIdx) => {
@@ -321,12 +318,12 @@
               const val = dataset.data[index];
               if (val > 0) {
                 const posX = bar.x;
-                const posY = y.bottom + 6; // Crisp 6px buffer below baseline
+                const posY = y.bottom + 6;
 
                 ctx.save();
                 ctx.translate(posX, posY);
-                ctx.rotate(-Math.PI / 3); // 60 deg slanted up-right
-                ctx.fillText(firstName, 0, 0); // Last letter ends at (0,0)
+                ctx.rotate(-Math.PI / 3);
+                ctx.fillText(firstName, 0, 0);
                 ctx.restore();
               }
             });
@@ -410,8 +407,8 @@
           layout: {
             padding: {
               top: 25,
-              right: 65,  // Space for external "Min 5" & "Max 8" labels
-              bottom: 135 // Space for slanted names, week boxes, and sprint boxes
+              right: 65,
+              bottom: 135
             }
           },
           scales: {

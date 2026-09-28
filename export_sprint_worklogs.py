@@ -3,7 +3,7 @@ import sys
 import requests
 import pandas as pd
 from requests.auth import HTTPBasicAuth
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -35,13 +35,30 @@ def parse_names(account_id, display_name):
     """Return explicit (firstname, lastname) from lookup or parse safely from display_name."""
     if account_id in KNOWN_AUTHORS:
         return KNOWN_AUTHORS[account_id]["firstname"], KNOWN_AUTHORS[account_id]["lastname"]
-    
     parts = display_name.strip().split()
     if len(parts) >= 2:
         return parts[0], " ".join(parts[1:])
     elif len(parts) == 1:
         return parts[0], ""
     return "Unknown", "Unknown"
+
+
+def extract_plain_text_from_adf(node):
+    """Recursively extract plain text from an Atlassian Document Format (ADF) node."""
+    if not node:
+        return ""
+    if isinstance(node, str):
+        return node.strip()
+    if isinstance(node, dict):
+        if node.get("type") == "text":
+            return node.get("text", "")
+        content = node.get("content", [])
+        extracted = [extract_plain_text_from_adf(child) for child in content]
+        return " ".join([t for t in extracted if t]).strip()
+    if isinstance(node, list):
+        extracted = [extract_plain_text_from_adf(child) for child in node]
+        return " ".join([t for t in extracted if t]).strip()
+    return ""
 
 
 def export_xlsx_to_csvs(xlsx_path=XLSX_FILE, output_dir=CSV_DIR):
@@ -59,10 +76,11 @@ def export_xlsx_to_csvs(xlsx_path=XLSX_FILE, output_dir=CSV_DIR):
         print(f"Exported: {csv_path}")
 
 
-from datetime import timedelta
+# Project timezone (CEST = UTC+2 in summer, CET = UTC+1 in winter)
+TIMEZONE = "Europe/Stockholm"
 
 def get_all_sprints():
-    """Fetch all sprints and compute theoretical (2-week block) and effective date boundaries."""
+    """Fetch all sprints and compute 2-week calendar boundaries in local project time."""
     sprints_raw = {}
     boards_url = f"https://{JIRA_DOMAIN}/rest/agile/1.0/board"
     try:
@@ -94,91 +112,52 @@ def get_all_sprints():
     if not sprint_list:
         return []
 
-    # Sort sprints chronologically by start date
+    # Sort sprints chronologically by raw start date
     sprint_list.sort(key=lambda s: pd.to_datetime(s.get("raw_start_date") or "2099-01-01", utc=True))
 
-    # Calculate theoretical (Monday to Sunday next week) and effective date windows
-    for i, sprint in enumerate(sprint_list):
-        eff_start_dt = pd.to_datetime(sprint.get("raw_start_date"), utc=True) if sprint.get("raw_start_date") else None
-        
-        # Calculate theoretical start (Monday 00:00:00) and theoretical end (Sunday 23:59:59 of 2nd week)
-        if eff_start_dt is not None:
-            monday_start = (eff_start_dt - timedelta(days=eff_start_dt.weekday())).replace(
+    for sprint in sprint_list:
+        raw_start = sprint.get("raw_start_date")
+        if raw_start:
+            # Convert UTC timestamp to local project timezone first
+            dt_local = pd.to_datetime(raw_start, utc=True).tz_convert(TIMEZONE)
+            # Find Monday 00:00:00 of that week in local time
+            monday_local = (dt_local - timedelta(days=dt_local.weekday())).replace(
                 hour=0, minute=0, second=0, microsecond=0
             )
             # Exactly 2 weeks later: Sunday 23:59:59
-            sunday_end = monday_start + timedelta(days=13, hours=23, minutes=59, seconds=59)
+            sunday_local = monday_local + timedelta(days=13, hours=23, minutes=59, seconds=59)
+
+            # Convert back to UTC for consistent comparisons with Jira worklogs
+            eff_start_utc = monday_local.tz_convert("UTC")
+            eff_end_utc = sunday_local.tz_convert("UTC")
         else:
-            monday_start = None
-            sunday_end = None
+            eff_start_utc = None
+            eff_end_utc = None
+            monday_local = None
+            sunday_local = None
 
-        sprint["effective_start_dt"] = eff_start_dt
-        sprint["theoretical_start_dt"] = monday_start
-        sprint["theoretical_end_dt"] = sunday_end
+        sprint["effective_start_dt"] = eff_start_utc
+        sprint["effective_end_dt"] = eff_end_utc
+        sprint["theoretical_start_dt"] = eff_start_utc
+        sprint["theoretical_end_dt"] = eff_end_utc
 
-    # Determine effective end date: start of next sprint minus 1 second, or theoretical end if last
-    for i, sprint in enumerate(sprint_list):
-        if i + 1 < len(sprint_list):
-            next_eff_start = sprint_list[i + 1].get("effective_start_dt")
-            if next_eff_start is not None:
-                sprint["effective_end_dt"] = next_eff_start - timedelta(seconds=1)
-            else:
-                sprint["effective_end_dt"] = sprint["theoretical_end_dt"]
-        else:
-            sprint["effective_end_dt"] = sprint["theoretical_end_dt"]
-
-        # Format clean strings for export
-        sprint["theoretical_start_date"] = (
-            sprint["theoretical_start_dt"].strftime("%Y-%m-%d %H:%M:%S")
-            if sprint["theoretical_start_dt"] is not None else ""
-        )
-        sprint["theoretical_end_date"] = (
-            sprint["theoretical_end_dt"].strftime("%Y-%m-%d %H:%M:%S")
-            if sprint["theoretical_end_dt"] is not None else ""
-        )
-        sprint["effective_start_date"] = (
-            sprint["effective_start_dt"].strftime("%Y-%m-%d %H:%M:%S")
-            if sprint["effective_start_dt"] is not None else ""
-        )
-        sprint["effective_end_date"] = (
-            sprint["effective_end_dt"].strftime("%Y-%m-%d %H:%M:%S")
-            if sprint["effective_end_dt"] is not None else ""
-        )
-
-        # Drop raw fields
+        sprint["theoretical_start_date"] = monday_local.strftime("%Y-%m-%d %H:%M:%S") if monday_local else ""
+        sprint["theoretical_end_date"] = sunday_local.strftime("%Y-%m-%d %H:%M:%S") if sunday_local else ""
+        sprint["effective_start_date"] = monday_local.strftime("%Y-%m-%d %H:%M:%S") if monday_local else ""
+        sprint["effective_end_date"] = sunday_local.strftime("%Y-%m-%d %H:%M:%S") if sunday_local else ""
         sprint.pop("raw_start_date", None)
 
     return sprint_list
 
 
-def match_sprint_by_date(started_dt, sprint_list):
-    """Assign worklog to a sprint using the effective start-to-next-start boundary."""
-    if started_dt is None or not sprint_list:
-        return "Unassigned / Backlog"
-
-    for sprint in sprint_list:
-        eff_start = sprint.get("effective_start_dt")
-        eff_end = sprint.get("effective_end_dt")
-
-        if eff_start and eff_end and eff_start <= started_dt <= eff_end:
-            return sprint["sprint_name"]
-
-    if sprint_list and sprint_list[0].get("effective_start_dt"):
-        if started_dt < sprint_list[0]["effective_start_dt"]:
-            return "Before First Sprint"
-
-    return "Outside Sprints"
-
-
 def get_all_jira_issues():
-    """Fetch ALL issues in Jira site using a valid universal JQL condition."""
+    """Fetch ALL issues in Jira site using the /search/jql API."""
     issues = []
     next_page_token = None
     url = f"https://{JIRA_DOMAIN}/rest/api/3/search/jql"
 
     while True:
         payload = {
-            # Use 'created is not EMPTY' to match every issue validly
             "jql": "created is not EMPTY ORDER BY created DESC",
             "fields": ["key", "summary", "status", "issuetype", "timespent", "created", "updated"],
             "maxResults": 50
@@ -187,8 +166,6 @@ def get_all_jira_issues():
             payload["nextPageToken"] = next_page_token
 
         res = requests.post(url, headers=HEADERS, auth=AUTH, json=payload)
-        
-        # If Jira still rejects with a 400, print Jira's exact error details
         if res.status_code != 200:
             print(f"Jira API Error ({res.status_code}): {res.text}")
             res.raise_for_status()
@@ -204,13 +181,31 @@ def get_all_jira_issues():
 
 
 def get_worklogs_for_issue(issue_key):
-    """Fetch raw worklog entries with granular seconds, author, and timestamp."""
+    """Fetch raw worklog entries for a specific issue."""
     url = f"https://{JIRA_DOMAIN}/rest/api/3/issue/{issue_key}/worklog"
     res = requests.get(url, headers=HEADERS, auth=AUTH)
     if res.status_code != 200:
         return []
     return res.json().get("worklogs", [])
 
+
+def match_sprint_by_date(started_dt, sprint_list):
+    """Assign worklog to a sprint using clean 2-week boundary windows."""
+    if started_dt is None or not sprint_list:
+        return "Unassigned / Backlog"
+
+    for sprint in sprint_list:
+        s_start = sprint.get("effective_start_dt")
+        s_end = sprint.get("effective_end_dt")
+        if s_start and s_end and s_start <= started_dt <= s_end:
+            return sprint["sprint_name"]
+
+    # If work was logged prior to official sprint 1 start, attribute to Sprint 1
+    if sprint_list and sprint_list[0].get("effective_start_dt"):
+        if started_dt < sprint_list[0]["effective_start_dt"]:
+            return sprint_list[0]["sprint_name"]
+
+    return "Outside Sprints"
 
 
 def build_star_report():
@@ -224,7 +219,7 @@ def build_star_report():
     dim_issues = {}
     dim_authors = {}
 
-    # Seed dim_authors with all known team members upfront
+    # Pre-populate dim_authors with known team members
     for acc_id, name_data in KNOWN_AUTHORS.items():
         dim_authors[acc_id] = {
             "account_id": acc_id,
@@ -250,7 +245,7 @@ def build_star_report():
             "updated": fields.get("updated", "")[:19].replace("T", " ")
         }
 
-        # Fetch individual worklog entries only if time has been logged on the issue
+        # Query worklogs if work was logged
         if total_time_spent > 0:
             worklogs = get_worklogs_for_issue(key)
             for wl in worklogs:
@@ -259,7 +254,6 @@ def build_star_report():
                 author_id = author_data.get("accountId", "unknown")
                 author_name = author_data.get("displayName", "Unknown")
 
-                # Ensure author is registered with firstname & lastname
                 if author_id not in dim_authors:
                     fn, ln = parse_names(author_id, author_name)
                     dim_authors[author_id] = {
@@ -296,15 +290,14 @@ def build_star_report():
                     "author_id": author_id,
                     "issue_key": key,
                     "hours_logged": hours,
-                    "comment": wl.get("comment", "")
+                    "comment": extract_plain_text_from_adf(wl.get("comment"))
                 })
 
-    # Prepare DataFrames
     df_facts = pd.DataFrame(raw_timelogs)
     df_issues = pd.DataFrame(list(dim_issues.values()))
     df_authors = pd.DataFrame(list(dim_authors.values()))
 
-    # Clean dim_sprints: strip internal datetime objects
+    # Clean dim_sprints: omit internal datetime objects
     sprints_clean = [
         {k: v for k, v in sp.items() if not k.endswith("_dt")}
         for sp in sprint_list
