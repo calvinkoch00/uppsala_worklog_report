@@ -1,4 +1,5 @@
 issue_key,summary,issue_type,status,timespent_hours,created,updated,issue_url
+SCRUM-79,Worklog Report Solution,Task,To Do,3.0,2026-09-28 22:55:55,2026-09-28 22:56:19,https://group-six-uppsala.atlassian.net/browse/SCRUM-79
 SCRUM-78,Risk analysis and planning,Subtask,To Do,0.0,2026-09-28 13:38:45,2026-09-28 13:40:32,https://group-six-uppsala.atlassian.net/browse/SCRUM-78
 SCRUM-77,List of potential risks,Subtask,To Do,0.0,2026-09-28 13:37:59,2026-09-28 13:40:14,https://group-six-uppsala.atlassian.net/browse/SCRUM-77
 SCRUM-76,Introduction,Subtask,To Do,0.0,2026-09-28 13:37:40,2026-09-28 13:42:36,https://group-six-uppsala.atlassian.net/browse/SCRUM-76
@@ -63,5 +64,5 @@ SCRUM-12,"Submit D1, Group Agreement",Task,Done,1.5,2026-09-07 12:31:35,2026-09-
 SCRUM-11,Revisit the group agreement,Task,Done,0.5,2026-09-04 12:43:07,2026-09-28 22:52:55,https://group-six-uppsala.atlassian.net/browse/SCRUM-11
 SCRUM-10,Fix issue with level 1,Bug,In Review,2.5,2026-09-04 11:57:26,2026-09-25 12:18:34,https://group-six-uppsala.atlassian.net/browse/SCRUM-10
 SCRUM-9,Fix duplicate word issue in level 2,Bug,In Progress,0.0,2026-09-04 11:54:17,2026-09-28 13:37:53,https://group-six-uppsala.atlassian.net/browse/SCRUM-9
-SCRUM-7,Fix case-sensitivity issue,Bug,In Review,0.0,2026-09-04 11:52:58,2026-09-28 13:39:15,https://group-six-uppsala.atlassian.net/browse/SCRUM-7
+SCRUM-7,Fix case-sensitivity issue,Bug,In Review,1.0,2026-09-04 11:52:58,2026-09-28 22:57:00,https://group-six-uppsala.atlassian.net/browse/SCRUM-7
 SCRUM-4,Subtask 2.1,Subtask,To Do,0.0,2026-09-02 16:12:55,2026-09-02 16:12:55,https://group-six-uppsala.atlassian.net/browse/SCRUM-4
