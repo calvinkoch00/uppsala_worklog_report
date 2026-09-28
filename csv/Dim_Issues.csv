@@ -1,10 +1,12 @@
 issue_key,summary,issue_type,status,timespent_hours,created,updated,issue_url
-SCRUM-79,Worklog Report Solution,Task,To Do,3.0,2026-09-28 22:55:55,2026-09-28 22:56:19,https://group-six-uppsala.atlassian.net/browse/SCRUM-79
+SCRUM-81,Project Management,Epic,To Do,0.0,2026-09-28 23:02:03,2026-09-28 23:02:04,https://group-six-uppsala.atlassian.net/browse/SCRUM-81
+SCRUM-80,Project Management 2 Meeting,Task,Done,2.0,2026-09-28 22:59:42,2026-09-28 23:01:15,https://group-six-uppsala.atlassian.net/browse/SCRUM-80
+SCRUM-79,Worklog Report Solution,Task,To Do,3.0,2026-09-28 22:55:55,2026-09-28 23:02:08,https://group-six-uppsala.atlassian.net/browse/SCRUM-79
 SCRUM-78,Risk analysis and planning,Subtask,To Do,0.0,2026-09-28 13:38:45,2026-09-28 13:40:32,https://group-six-uppsala.atlassian.net/browse/SCRUM-78
 SCRUM-77,List of potential risks,Subtask,To Do,0.0,2026-09-28 13:37:59,2026-09-28 13:40:14,https://group-six-uppsala.atlassian.net/browse/SCRUM-77
 SCRUM-76,Introduction,Subtask,To Do,0.0,2026-09-28 13:37:40,2026-09-28 13:42:36,https://group-six-uppsala.atlassian.net/browse/SCRUM-76
-SCRUM-75,Sprint 3 planning meeting,Task,To Do,5.0,2026-09-25 10:49:06,2026-09-28 22:36:57,https://group-six-uppsala.atlassian.net/browse/SCRUM-75
-SCRUM-74,Look through options for time tracking,Task,To Do,1.0,2026-09-25 10:40:35,2026-09-28 22:30:53,https://group-six-uppsala.atlassian.net/browse/SCRUM-74
+SCRUM-75,Sprint 3 planning meeting,Task,To Do,5.0,2026-09-25 10:49:06,2026-09-28 23:01:42,https://group-six-uppsala.atlassian.net/browse/SCRUM-75
+SCRUM-74,Look through options for time tracking,Task,To Do,1.0,2026-09-25 10:40:35,2026-09-28 23:01:31,https://group-six-uppsala.atlassian.net/browse/SCRUM-74
 SCRUM-73,Prepare for Project Management and Tech Lead meeting,Task,To Do,0.0,2026-09-25 10:32:10,2026-09-28 13:40:03,https://group-six-uppsala.atlassian.net/browse/SCRUM-73
 SCRUM-72,Design Level 4,Task,To Do,0.0,2026-09-23 14:07:23,2026-09-23 14:07:33,https://group-six-uppsala.atlassian.net/browse/SCRUM-72
 SCRUM-71,Attend Technical Lead meeting 3,Task,To Do,0.0,2026-09-23 14:05:18,2026-09-28 13:39:58,https://group-six-uppsala.atlassian.net/browse/SCRUM-71
