@@ -12,27 +12,30 @@ AUTH = HTTPBasicAuth(JIRA_EMAIL, JIRA_API_TOKEN)
 HEADERS = {"Accept": "application/json"}
 
 def get_issues_with_worklogs(jql_query):
-    """Fetch issues matching JQL with their sprint metadata."""
+    """Fetch issues matching JQL using the new Jira Cloud /search/jql API."""
     issues = []
-    start_at = 0
-    max_results = 50
+    next_page_token = None
+    url = f"https://{JIRA_DOMAIN}/rest/api/3/search/jql"
 
     while True:
-        url = f"https://{JIRA_DOMAIN}/rest/api/3/search"
-        params = {
+        payload = {
             "jql": jql_query,
-            "fields": "key,summary,sprint,customfield_10020",  # customfield_10020 is typical for sprint
-            "startAt": start_at,
-            "maxResults": max_results
+            "fields": ["key", "summary", "sprint", "customfield_10020"],
+            "maxResults": 50
         }
-        res = requests.get(url, headers=HEADERS, auth=AUTH, params=params)
+        if next_page_token:
+            payload["nextPageToken"] = next_page_token
+
+        res = requests.post(url, headers={"Accept": "application/json", "Content-Type": "application/json"}, auth=AUTH, json=payload)
         res.raise_for_status()
         data = res.json()
 
         issues.extend(data.get("issues", []))
-        if start_at + max_results >= data.get("total", 0):
+
+        # Check if another page exists
+        next_page_token = data.get("nextPageToken")
+        if not next_page_token:
             break
-        start_at += max_results
 
     return issues
 
