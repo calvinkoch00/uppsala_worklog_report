@@ -8,7 +8,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-JIRA_DOMAIN = os.getenv("JIRA_DOMAIN")
+JIRA_DOMAIN = os.getenv("JIRA_DOMAIN", "")
+JIRA_DOMAIN = JIRA_DOMAIN.replace("https://", "").replace("http://", "").strip("/")
 JIRA_EMAIL = os.getenv("JIRA_EMAIL")
 JIRA_API_TOKEN = os.getenv("JIRA_API_TOKEN")
 
