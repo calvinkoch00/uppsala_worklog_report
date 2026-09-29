@@ -1,4 +1,5 @@
 worklog_id,timestamp,date,calendar_week,sprint_by_date,worklog_author,author_id,issue_key,hours_logged,comment
+10404,2026-09-29 07:20:10,2026-09-29,2026-W40,SCRUM Sprint 3,Sai Suchith Kurra,712020:7a155d42-06e0-4222-9d4e-f39dede68758,SCRUM-82,4.0,
 10370,2026-09-21 19:00:00,2026-09-21,2026-W39,SCRUM Sprint 2,Calvin Koch,712020:1793fffe-a3b4-4b8b-b162-77b2e79e19da,SCRUM-80,2.0,
 10368,2026-09-28 17:56:13,2026-09-28,2026-W40,SCRUM Sprint 3,Calvin Koch,712020:1793fffe-a3b4-4b8b-b162-77b2e79e19da,SCRUM-79,3.0,
 10322,2026-09-28 11:00:24,2026-09-28,2026-W40,SCRUM Sprint 3,Anton Hedlund,712020:991ea2e9-c055-4d6e-a6b7-a44bccafe0a6,SCRUM-75,1.0,
@@ -48,4 +49,5 @@ worklog_id,timestamp,date,calendar_week,sprint_by_date,worklog_author,author_id,
 10362,2026-09-10 19:29:00,2026-09-10,2026-W37,SCRUM Sprint 1,Calvin Koch,712020:1793fffe-a3b4-4b8b-b162-77b2e79e19da,SCRUM-12,1.0,
 10366,2026-09-10 20:22:00,2026-09-10,2026-W37,SCRUM Sprint 1,Calvin Koch,712020:1793fffe-a3b4-4b8b-b162-77b2e79e19da,SCRUM-11,0.5,
 10071,2026-09-18 09:14:00,2026-09-18,2026-W38,SCRUM Sprint 2,Sai Suchith Kurra,712020:7a155d42-06e0-4222-9d4e-f39dede68758,SCRUM-10,2.5,The issue has been resolved.
+10403,2026-09-29 07:44:17,2026-09-29,2026-W40,SCRUM Sprint 3,Sai Suchith Kurra,712020:7a155d42-06e0-4222-9d4e-f39dede68758,SCRUM-9,3.5,
 10369,2026-09-16 19:56:00,2026-09-16,2026-W38,SCRUM Sprint 2,Calvin Koch,712020:1793fffe-a3b4-4b8b-b162-77b2e79e19da,SCRUM-7,1.0,
