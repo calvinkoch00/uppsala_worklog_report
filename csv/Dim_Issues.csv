@@ -26,14 +26,14 @@ SCRUM-59,Level 4,Epic,To Do,0.0,2026-09-21 16:02:30,2026-09-21 16:09:57,https://
 SCRUM-58,Group Meeting 21.09.2026,Task,Done,9.0,2026-09-21 14:29:42,2026-09-28 13:36:42,https://group-six-uppsala.atlassian.net/browse/SCRUM-58
 SCRUM-57,add more user stories,Subtask,Done,0.0,2026-09-21 14:16:53,2026-09-23 13:41:49,https://group-six-uppsala.atlassian.net/browse/SCRUM-57
 SCRUM-56,Adjusting user requirements and adding more user stories,Subtask,Done,0.0,2026-09-21 14:16:48,2026-09-23 22:58:08,https://group-six-uppsala.atlassian.net/browse/SCRUM-56
-SCRUM-55,Reorganise the files and folders in the github repo,Task,In Review,3.0,2026-09-21 13:15:32,2026-09-28 14:38:13,https://group-six-uppsala.atlassian.net/browse/SCRUM-55
+SCRUM-55,Reorganise the files and folders in the github repo,Task,Done,3.0,2026-09-21 13:15:32,2026-09-30 12:37:29,https://group-six-uppsala.atlassian.net/browse/SCRUM-55
 SCRUM-54,"Update D2, Requirements Specification",Task,Done,5.0,2026-09-20 18:22:35,2026-09-28 22:24:30,https://group-six-uppsala.atlassian.net/browse/SCRUM-54
 SCRUM-53,"Update D1, Group Agreement",Task,Done,0.0,2026-09-20 18:15:13,2026-09-24 13:36:15,https://group-six-uppsala.atlassian.net/browse/SCRUM-53
 SCRUM-52,Brainstorming drafts of level 4,Task,Done,0.0,2026-09-16 11:04:20,2026-09-24 13:33:59,https://group-six-uppsala.atlassian.net/browse/SCRUM-52
 SCRUM-50,Change the en/ett button in level 3 to a field you can fill out,Task,In Progress,5.0,2026-09-16 10:51:26,2026-09-28 13:54:24,https://group-six-uppsala.atlassian.net/browse/SCRUM-50
 SCRUM-49,Fix issue with language change not affecting instructions,Bug,In Progress,0.0,2026-09-16 10:46:54,2026-09-28 13:23:24,https://group-six-uppsala.atlassian.net/browse/SCRUM-49
 SCRUM-48,Sprint planning meeting,Task,Done,6.0,2026-09-16 10:43:45,2026-09-21 16:06:21,https://group-six-uppsala.atlassian.net/browse/SCRUM-48
-SCRUM-47,Fix issue with the educational information page,Bug,In Review,3.0,2026-09-16 10:39:28,2026-09-24 14:14:59,https://group-six-uppsala.atlassian.net/browse/SCRUM-47
+SCRUM-47,Fix issue with the educational information page,Bug,Done,3.0,2026-09-16 10:39:28,2026-09-30 12:38:00,https://group-six-uppsala.atlassian.net/browse/SCRUM-47
 SCRUM-46,Look through the existing code,Task,To Do,0.0,2026-09-16 10:26:40,2026-09-28 13:34:18,https://group-six-uppsala.atlassian.net/browse/SCRUM-46
 SCRUM-45,Write Submission,Subtask,Done,0.0,2026-09-14 18:29:10,2026-09-14 18:29:18,https://group-six-uppsala.atlassian.net/browse/SCRUM-45
 SCRUM-44,Write Submission,Subtask,Done,0.0,2026-09-14 18:28:48,2026-09-14 18:29:01,https://group-six-uppsala.atlassian.net/browse/SCRUM-44
@@ -45,12 +45,12 @@ SCRUM-39,Attend Meeting,Subtask,Done,0.0,2026-09-14 18:26:47,2026-09-14 18:27:07
 SCRUM-38,Attend Meeting,Subtask,Done,1.0,2026-09-14 18:26:32,2026-09-25 12:17:19,https://group-six-uppsala.atlassian.net/browse/SCRUM-38
 SCRUM-37,Attend Meeting,Subtask,Done,0.0,2026-09-14 18:26:05,2026-09-14 18:26:25,https://group-six-uppsala.atlassian.net/browse/SCRUM-37
 SCRUM-36,"Submit A2, Artefacts",Task,Done,0.0,2026-09-14 17:45:50,2026-09-28 13:34:01,https://group-six-uppsala.atlassian.net/browse/SCRUM-36
-SCRUM-35,Ethical Considerations,Subtask,To Do,3.0,2026-09-14 16:26:10,2026-09-27 22:42:27,https://group-six-uppsala.atlassian.net/browse/SCRUM-35
-SCRUM-34,Functional Requirements 2,Subtask,To Do,0.25,2026-09-14 16:25:56,2026-09-25 17:15:26,https://group-six-uppsala.atlassian.net/browse/SCRUM-34
-SCRUM-33,Functional Requirements 1,Subtask,To Do,1.0,2026-09-14 16:25:41,2026-09-25 17:15:07,https://group-six-uppsala.atlassian.net/browse/SCRUM-33
-SCRUM-32,Components,Subtask,To Do,0.0,2026-09-14 16:25:35,2026-09-24 14:03:01,https://group-six-uppsala.atlassian.net/browse/SCRUM-32
-SCRUM-31,Definitions,Subtask,To Do,0.0,2026-09-14 16:25:28,2026-09-24 13:57:18,https://group-six-uppsala.atlassian.net/browse/SCRUM-31
-SCRUM-30,Scope Statement,Subtask,To Do,0.0,2026-09-14 16:25:21,2026-09-24 14:03:33,https://group-six-uppsala.atlassian.net/browse/SCRUM-30
+SCRUM-35,Ethical Considerations,Subtask,Done,3.0,2026-09-14 16:26:10,2026-09-30 12:43:14,https://group-six-uppsala.atlassian.net/browse/SCRUM-35
+SCRUM-34,Functional Requirements 2,Subtask,Done,0.25,2026-09-14 16:25:56,2026-09-30 12:43:12,https://group-six-uppsala.atlassian.net/browse/SCRUM-34
+SCRUM-33,Functional Requirements 1,Subtask,Done,1.0,2026-09-14 16:25:41,2026-09-30 12:43:11,https://group-six-uppsala.atlassian.net/browse/SCRUM-33
+SCRUM-32,Components,Subtask,Done,0.0,2026-09-14 16:25:35,2026-09-30 12:43:08,https://group-six-uppsala.atlassian.net/browse/SCRUM-32
+SCRUM-31,Definitions,Subtask,Done,0.0,2026-09-14 16:25:28,2026-09-30 12:43:01,https://group-six-uppsala.atlassian.net/browse/SCRUM-31
+SCRUM-30,Scope Statement,Subtask,Done,0.0,2026-09-14 16:25:21,2026-09-30 12:43:00,https://group-six-uppsala.atlassian.net/browse/SCRUM-30
 SCRUM-29,User Requirements 2,Subtask,Done,0.0,2026-09-14 14:14:13,2026-09-14 14:17:18,https://group-six-uppsala.atlassian.net/browse/SCRUM-29
 SCRUM-28,User Requirements 1,Subtask,Done,0.0,2026-09-14 14:14:02,2026-09-14 14:17:06,https://group-six-uppsala.atlassian.net/browse/SCRUM-28
 SCRUM-27,User Classes,Subtask,Done,2.0,2026-09-14 14:13:58,2026-09-25 12:14:32,https://group-six-uppsala.atlassian.net/browse/SCRUM-27
@@ -65,7 +65,7 @@ SCRUM-14,"Submit A1, Artefacts",Task,Done,0.0,2026-09-07 12:36:46,2026-09-14 18:
 SCRUM-13,"Submit D2, Requirements Elicitation",Task,Done,2.0,2026-09-07 12:34:14,2026-09-28 22:55:02,https://group-six-uppsala.atlassian.net/browse/SCRUM-13
 SCRUM-12,"Submit D1, Group Agreement",Task,Done,1.5,2026-09-07 12:31:35,2026-09-28 22:30:22,https://group-six-uppsala.atlassian.net/browse/SCRUM-12
 SCRUM-11,Revisit the group agreement,Task,Done,0.5,2026-09-04 12:43:07,2026-09-28 22:52:55,https://group-six-uppsala.atlassian.net/browse/SCRUM-11
-SCRUM-10,Fix issue with level 1,Bug,In Review,2.5,2026-09-04 11:57:26,2026-09-25 12:18:34,https://group-six-uppsala.atlassian.net/browse/SCRUM-10
+SCRUM-10,Fix issue with level 1,Bug,Done,2.5,2026-09-04 11:57:26,2026-09-30 12:37:26,https://group-six-uppsala.atlassian.net/browse/SCRUM-10
 SCRUM-9,Fix duplicate word issue in level 2,Bug,In Review,3.5,2026-09-04 11:54:17,2026-09-29 13:14:37,https://group-six-uppsala.atlassian.net/browse/SCRUM-9
-SCRUM-7,Fix case-sensitivity issue,Bug,In Review,1.0,2026-09-04 11:52:58,2026-09-28 22:57:00,https://group-six-uppsala.atlassian.net/browse/SCRUM-7
+SCRUM-7,Fix case-sensitivity issue,Bug,Done,6.0,2026-09-04 11:52:58,2026-09-30 12:36:51,https://group-six-uppsala.atlassian.net/browse/SCRUM-7
 SCRUM-4,Subtask 2.1,Subtask,To Do,0.0,2026-09-02 16:12:55,2026-09-02 16:12:55,https://group-six-uppsala.atlassian.net/browse/SCRUM-4
