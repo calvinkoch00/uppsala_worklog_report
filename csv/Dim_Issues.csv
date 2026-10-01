@@ -6,7 +6,7 @@ SCRUM-79,Worklog Report Solution,Task,To Do,3.0,2026-09-28 22:55:55,2026-09-28 2
 SCRUM-78,Risk analysis and planning,Subtask,To Do,0.0,2026-09-28 13:38:45,2026-09-28 13:40:32,https://group-six-uppsala.atlassian.net/browse/SCRUM-78
 SCRUM-77,List of potential risks,Subtask,To Do,0.0,2026-09-28 13:37:59,2026-09-28 13:40:14,https://group-six-uppsala.atlassian.net/browse/SCRUM-77
 SCRUM-76,Introduction,Subtask,To Do,0.0,2026-09-28 13:37:40,2026-09-28 13:42:36,https://group-six-uppsala.atlassian.net/browse/SCRUM-76
-SCRUM-75,Sprint 3 planning meeting,Task,To Do,5.0,2026-09-25 10:49:06,2026-09-28 23:01:42,https://group-six-uppsala.atlassian.net/browse/SCRUM-75
+SCRUM-75,Sprint 3 planning meeting,Task,Done,6.0,2026-09-25 10:49:06,2026-10-01 11:39:18,https://group-six-uppsala.atlassian.net/browse/SCRUM-75
 SCRUM-74,Look through options for time tracking,Task,To Do,1.0,2026-09-25 10:40:35,2026-09-28 23:01:31,https://group-six-uppsala.atlassian.net/browse/SCRUM-74
 SCRUM-73,Prepare for Project Management and Tech Lead meeting,Task,To Do,0.0,2026-09-25 10:32:10,2026-09-28 13:40:03,https://group-six-uppsala.atlassian.net/browse/SCRUM-73
 SCRUM-72,Design Level 4,Task,To Do,0.0,2026-09-23 14:07:23,2026-09-23 14:07:33,https://group-six-uppsala.atlassian.net/browse/SCRUM-72
@@ -14,8 +14,8 @@ SCRUM-71,Attend Technical Lead meeting 3,Task,To Do,0.0,2026-09-23 14:05:18,2026
 SCRUM-70,Attend Project Management meeting 3,Task,To Do,0.0,2026-09-23 14:05:17,2026-09-28 13:39:56,https://group-six-uppsala.atlassian.net/browse/SCRUM-70
 SCRUM-69,"Submit A3, Artefacts",Task,To Do,0.0,2026-09-23 14:03:04,2026-09-28 13:43:04,https://group-six-uppsala.atlassian.net/browse/SCRUM-69
 SCRUM-68,Initial planning of sprint 3,Task,Done,0.0,2026-09-23 14:00:17,2026-09-23 14:08:42,https://group-six-uppsala.atlassian.net/browse/SCRUM-68
-SCRUM-67,"Submit D5, Integration and Project Completion Plan",Task,To Do,0.0,2026-09-23 13:59:53,2026-09-23 14:02:47,https://group-six-uppsala.atlassian.net/browse/SCRUM-67
-SCRUM-66,"Submit D4, Risk Assesment Plan",Task,To Do,0.0,2026-09-23 13:59:26,2026-09-28 13:42:01,https://group-six-uppsala.atlassian.net/browse/SCRUM-66
+SCRUM-67,"Submit D5, Integration and Project Completion Plan",Task,In Progress,0.0,2026-09-23 13:59:53,2026-10-01 11:39:31,https://group-six-uppsala.atlassian.net/browse/SCRUM-67
+SCRUM-66,"Submit D4, Risk Assesment Plan",Task,To Do,0.0,2026-09-23 13:59:26,2026-10-01 11:39:48,https://group-six-uppsala.atlassian.net/browse/SCRUM-66
 SCRUM-65,User Requirements,Epic,To Do,0.0,2026-09-23 13:55:24,2026-09-23 13:56:06,https://group-six-uppsala.atlassian.net/browse/SCRUM-65
 SCRUM-64,Group Meeting 24.09.2026,Task,Done,6.0,2026-09-23 13:48:35,2026-09-28 13:53:59,https://group-six-uppsala.atlassian.net/browse/SCRUM-64
 SCRUM-63,Project Handover Code Cleanup,Epic,To Do,0.0,2026-09-21 16:08:11,2026-09-21 16:08:12,https://group-six-uppsala.atlassian.net/browse/SCRUM-63
