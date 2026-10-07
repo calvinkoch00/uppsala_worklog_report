@@ -1,6 +1,9 @@
 issue_key,summary,issue_type,status,timespent_hours,created,updated,issue_url
+SCRUM-87,Level 3,Epic,To Do,0.0,2026-10-07 14:13:56,2026-10-07 14:13:56,https://group-six-uppsala.atlassian.net/browse/SCRUM-87
+SCRUM-86,Level 2,Epic,To Do,0.0,2026-10-07 14:13:50,2026-10-07 14:13:50,https://group-six-uppsala.atlassian.net/browse/SCRUM-86
+SCRUM-85,Change the en/ett button in level 2 to separate the en/ett input,Task,In Progress,0.0,2026-10-07 14:11:37,2026-10-07 14:14:09,https://group-six-uppsala.atlassian.net/browse/SCRUM-85
 SCRUM-84,Correct and resubmit D3,Bug,To Do,1.0,2026-10-07 13:07:21,2026-10-07 13:43:15,https://group-six-uppsala.atlassian.net/browse/SCRUM-84
-SCRUM-83,Meeting 7.10.2026,Bug,In Progress,1.0,2026-10-07 12:47:48,2026-10-07 13:22:44,https://group-six-uppsala.atlassian.net/browse/SCRUM-83
+SCRUM-83,Meeting 7.10.2026,Bug,In Progress,6.0,2026-10-07 12:47:48,2026-10-07 14:22:43,https://group-six-uppsala.atlassian.net/browse/SCRUM-83
 SCRUM-82,Update the User Interface.,Task,In Review,4.0,2026-09-29 13:16:11,2026-09-29 13:21:23,https://group-six-uppsala.atlassian.net/browse/SCRUM-82
 SCRUM-81,Project Management,Epic,To Do,0.0,2026-09-28 23:02:03,2026-09-28 23:02:04,https://group-six-uppsala.atlassian.net/browse/SCRUM-81
 SCRUM-80,Project Management 2 Meeting,Task,Done,2.0,2026-09-28 22:59:42,2026-09-28 23:01:15,https://group-six-uppsala.atlassian.net/browse/SCRUM-80
@@ -8,16 +11,16 @@ SCRUM-79,Worklog Report Solution,Task,Done,3.0,2026-09-28 22:55:55,2026-10-07 13
 SCRUM-78,Risk analysis and planning,Subtask,To Do,0.0,2026-09-28 13:38:45,2026-09-28 13:40:32,https://group-six-uppsala.atlassian.net/browse/SCRUM-78
 SCRUM-77,List of potential risks,Subtask,To Do,0.0,2026-09-28 13:37:59,2026-09-28 13:40:14,https://group-six-uppsala.atlassian.net/browse/SCRUM-77
 SCRUM-76,Introduction,Subtask,To Do,0.0,2026-09-28 13:37:40,2026-09-28 13:42:36,https://group-six-uppsala.atlassian.net/browse/SCRUM-76
-SCRUM-75,Sprint 3 planning meeting,Task,Done,6.0,2026-09-25 10:49:06,2026-10-01 11:39:18,https://group-six-uppsala.atlassian.net/browse/SCRUM-75
+SCRUM-75,Sprint 3 planning meeting,Task,Done,6.5,2026-09-25 10:49:06,2026-10-07 14:23:25,https://group-six-uppsala.atlassian.net/browse/SCRUM-75
 SCRUM-74,Look through options for time tracking,Task,Done,1.0,2026-09-25 10:40:35,2026-10-07 13:08:02,https://group-six-uppsala.atlassian.net/browse/SCRUM-74
-SCRUM-73,Prepare for Project Management and Tech Lead meeting,Task,To Do,0.0,2026-09-25 10:32:10,2026-10-05 11:53:53,https://group-six-uppsala.atlassian.net/browse/SCRUM-73
+SCRUM-73,Prepare for Project Management and Tech Lead meeting,Task,Done,1.0,2026-09-25 10:32:10,2026-10-07 14:22:59,https://group-six-uppsala.atlassian.net/browse/SCRUM-73
 SCRUM-72,Design Level 4,Task,To Do,0.0,2026-09-23 14:07:23,2026-09-23 14:07:33,https://group-six-uppsala.atlassian.net/browse/SCRUM-72
-SCRUM-71,Attend Technical Lead meeting 3,Task,In Progress,0.0,2026-09-23 14:05:18,2026-10-06 16:34:25,https://group-six-uppsala.atlassian.net/browse/SCRUM-71
+SCRUM-71,Attend Technical Lead meeting 3,Task,Done,0.0,2026-09-23 14:05:18,2026-10-07 14:10:29,https://group-six-uppsala.atlassian.net/browse/SCRUM-71
 SCRUM-70,Attend Project Management meeting 3,Task,Done,1.0,2026-09-23 14:05:17,2026-10-06 16:34:14,https://group-six-uppsala.atlassian.net/browse/SCRUM-70
 SCRUM-69,"Submit A3, Artefacts",Task,To Do,0.0,2026-09-23 14:03:04,2026-09-28 13:43:04,https://group-six-uppsala.atlassian.net/browse/SCRUM-69
 SCRUM-68,Initial planning of sprint 3,Task,Done,0.0,2026-09-23 14:00:17,2026-09-23 14:08:42,https://group-six-uppsala.atlassian.net/browse/SCRUM-68
 SCRUM-67,"Submit D5, Integration and Project Completion Plan",Task,In Progress,7.0,2026-09-23 13:59:53,2026-10-07 13:42:37,https://group-six-uppsala.atlassian.net/browse/SCRUM-67
-SCRUM-66,"Submit D4, Risk Assesment Plan",Task,To Do,0.0,2026-09-23 13:59:26,2026-10-01 11:39:48,https://group-six-uppsala.atlassian.net/browse/SCRUM-66
+SCRUM-66,"Submit D4, Risk Assesment Plan",Task,In Progress,0.0,2026-09-23 13:59:26,2026-10-07 14:08:43,https://group-six-uppsala.atlassian.net/browse/SCRUM-66
 SCRUM-65,User Requirements,Epic,To Do,0.0,2026-09-23 13:55:24,2026-09-23 13:56:06,https://group-six-uppsala.atlassian.net/browse/SCRUM-65
 SCRUM-64,Group Meeting 24.09.2026,Task,Done,6.0,2026-09-23 13:48:35,2026-09-28 13:53:59,https://group-six-uppsala.atlassian.net/browse/SCRUM-64
 SCRUM-63,Project Handover Code Cleanup,Epic,To Do,0.0,2026-09-21 16:08:11,2026-09-21 16:08:12,https://group-six-uppsala.atlassian.net/browse/SCRUM-63
@@ -32,11 +35,11 @@ SCRUM-55,Reorganise the files and folders in the github repo,Task,Done,3.0,2026-
 SCRUM-54,"Update D2, Requirements Specification",Task,Done,5.0,2026-09-20 18:22:35,2026-09-28 22:24:30,https://group-six-uppsala.atlassian.net/browse/SCRUM-54
 SCRUM-53,"Update D1, Group Agreement",Task,Done,0.0,2026-09-20 18:15:13,2026-09-24 13:36:15,https://group-six-uppsala.atlassian.net/browse/SCRUM-53
 SCRUM-52,Brainstorming drafts of level 4,Task,Done,0.0,2026-09-16 11:04:20,2026-09-24 13:33:59,https://group-six-uppsala.atlassian.net/browse/SCRUM-52
-SCRUM-50,Change the en/ett button in level 3 to a field you can fill out,Task,In Progress,5.0,2026-09-16 10:51:26,2026-09-28 13:54:24,https://group-six-uppsala.atlassian.net/browse/SCRUM-50
+SCRUM-50,Change the en/ett button in level 3 to a field you can fill out,Task,In Progress,5.0,2026-09-16 10:51:26,2026-10-07 14:15:52,https://group-six-uppsala.atlassian.net/browse/SCRUM-50
 SCRUM-49,Fix issue with language change not affecting instructions,Bug,In Progress,5.0,2026-09-16 10:46:54,2026-10-04 20:28:06,https://group-six-uppsala.atlassian.net/browse/SCRUM-49
 SCRUM-48,Sprint planning meeting,Task,Done,6.0,2026-09-16 10:43:45,2026-09-21 16:06:21,https://group-six-uppsala.atlassian.net/browse/SCRUM-48
 SCRUM-47,Fix issue with the educational information page,Bug,Done,3.0,2026-09-16 10:39:28,2026-09-30 12:38:00,https://group-six-uppsala.atlassian.net/browse/SCRUM-47
-SCRUM-46,Look through the existing code,Task,To Do,0.0,2026-09-16 10:26:40,2026-09-28 13:34:18,https://group-six-uppsala.atlassian.net/browse/SCRUM-46
+SCRUM-46,Look through the existing code,Task,Done,0.0,2026-09-16 10:26:40,2026-10-07 14:08:33,https://group-six-uppsala.atlassian.net/browse/SCRUM-46
 SCRUM-45,Write Submission,Subtask,Done,0.0,2026-09-14 18:29:10,2026-09-14 18:29:18,https://group-six-uppsala.atlassian.net/browse/SCRUM-45
 SCRUM-44,Write Submission,Subtask,Done,0.0,2026-09-14 18:28:48,2026-09-14 18:29:01,https://group-six-uppsala.atlassian.net/browse/SCRUM-44
 SCRUM-43,Write Submission,Subtask,Done,0.0,2026-09-14 18:28:35,2026-09-14 18:28:42,https://group-six-uppsala.atlassian.net/browse/SCRUM-43
