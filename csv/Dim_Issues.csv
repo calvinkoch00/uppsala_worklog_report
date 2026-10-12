@@ -23,7 +23,7 @@ SCRUM-70,Attend Project Management meeting 3,Task,Done,1.0,2026-09-23 14:05:17,2
 SCRUM-69,"Submit A3, Artefacts",Task,Done,0.0,2026-09-23 14:03:04,2026-10-10 11:59:28,https://group-six-uppsala.atlassian.net/browse/SCRUM-69
 SCRUM-68,Initial planning of sprint 3,Task,Done,1.5,2026-09-23 14:00:17,2026-10-11 20:41:39,https://group-six-uppsala.atlassian.net/browse/SCRUM-68
 SCRUM-67,"Submit D5, Integration and Project Completion Plan",Task,In Progress,7.0,2026-09-23 13:59:53,2026-10-10 11:59:35,https://group-six-uppsala.atlassian.net/browse/SCRUM-67
-SCRUM-66,"Submit D4, Risk Assesment Plan",Task,In Progress,0.0,2026-09-23 13:59:26,2026-10-10 11:59:37,https://group-six-uppsala.atlassian.net/browse/SCRUM-66
+SCRUM-66,"Submit D4, Risk Assesment Plan",Task,In Progress,4.5,2026-09-23 13:59:26,2026-10-12 11:24:35,https://group-six-uppsala.atlassian.net/browse/SCRUM-66
 SCRUM-65,User Requirements,Epic,To Do,0.0,2026-09-23 13:55:24,2026-09-23 13:56:06,https://group-six-uppsala.atlassian.net/browse/SCRUM-65
 SCRUM-64,Group Meeting 24.09.2026,Task,Done,6.0,2026-09-23 13:48:35,2026-09-28 13:53:59,https://group-six-uppsala.atlassian.net/browse/SCRUM-64
 SCRUM-63,Project Handover Code Cleanup,Epic,To Do,0.0,2026-09-21 16:08:11,2026-09-21 16:08:12,https://group-six-uppsala.atlassian.net/browse/SCRUM-63
@@ -38,7 +38,7 @@ SCRUM-55,Reorganise the files and folders in the github repo,Task,Done,3.0,2026-
 SCRUM-54,"Update D2, Requirements Specification",Task,Done,5.0,2026-09-20 18:22:35,2026-09-28 22:24:30,https://group-six-uppsala.atlassian.net/browse/SCRUM-54
 SCRUM-53,"Update D1, Group Agreement",Task,Done,0.5,2026-09-20 18:15:13,2026-10-11 20:49:29,https://group-six-uppsala.atlassian.net/browse/SCRUM-53
 SCRUM-52,Brainstorming drafts of level 4,Task,Done,2.0,2026-09-16 11:04:20,2026-10-11 20:49:14,https://group-six-uppsala.atlassian.net/browse/SCRUM-52
-SCRUM-50,Change the en/ett button in level 3 to a field you can fill out,Task,In Progress,6.5,2026-09-16 10:51:26,2026-10-10 11:59:33,https://group-six-uppsala.atlassian.net/browse/SCRUM-50
+SCRUM-50,Change the en/ett button in level 3 to a field you can fill out,Task,In Review,6.5,2026-09-16 10:51:26,2026-10-12 11:20:45,https://group-six-uppsala.atlassian.net/browse/SCRUM-50
 SCRUM-49,Fix issue with language change not affecting instructions,Bug,In Progress,5.0,2026-09-16 10:46:54,2026-10-10 11:59:32,https://group-six-uppsala.atlassian.net/browse/SCRUM-49
 SCRUM-48,Sprint planning meeting,Task,Done,6.0,2026-09-16 10:43:45,2026-09-21 16:06:21,https://group-six-uppsala.atlassian.net/browse/SCRUM-48
 SCRUM-47,Fix issue with the educational information page,Bug,Done,3.0,2026-09-16 10:39:28,2026-09-30 12:38:00,https://group-six-uppsala.atlassian.net/browse/SCRUM-47
