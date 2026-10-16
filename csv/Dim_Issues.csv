@@ -1,5 +1,5 @@
 issue_key,summary,issue_type,status,timespent_hours,created,updated,issue_url
-SCRUM-90,Show license for photos in-game,Bug,In Review,5.0,2026-10-10 18:53:30,2026-10-12 17:25:27,https://group-six-uppsala.atlassian.net/browse/SCRUM-90
+SCRUM-90,Show license for photos in-game,Bug,Done,5.0,2026-10-10 18:53:30,2026-10-16 19:04:30,https://group-six-uppsala.atlassian.net/browse/SCRUM-90
 SCRUM-89,Make a Readme,Task,To Do,0.0,2026-10-09 12:26:17,2026-10-09 12:26:17,https://group-six-uppsala.atlassian.net/browse/SCRUM-89
 SCRUM-88,Fix D3 Issues for Resubmission,Task,Done,1.0,2026-10-08 22:04:14,2026-10-08 22:05:19,https://group-six-uppsala.atlassian.net/browse/SCRUM-88
 SCRUM-87,Level 3,Epic,To Do,0.0,2026-10-07 14:13:56,2026-10-07 14:13:56,https://group-six-uppsala.atlassian.net/browse/SCRUM-87
@@ -38,7 +38,7 @@ SCRUM-55,Reorganise the files and folders in the github repo,Task,Done,3.0,2026-
 SCRUM-54,"Update D2, Requirements Specification",Task,Done,5.0,2026-09-20 18:22:35,2026-09-28 22:24:30,https://group-six-uppsala.atlassian.net/browse/SCRUM-54
 SCRUM-53,"Update D1, Group Agreement",Task,Done,0.5,2026-09-20 18:15:13,2026-10-11 20:49:29,https://group-six-uppsala.atlassian.net/browse/SCRUM-53
 SCRUM-52,Brainstorming drafts of level 4,Task,Done,2.0,2026-09-16 11:04:20,2026-10-11 20:49:14,https://group-six-uppsala.atlassian.net/browse/SCRUM-52
-SCRUM-50,Change the en/ett button in level 3 to a field you can fill out,Task,In Review,6.5,2026-09-16 10:51:26,2026-10-12 11:20:45,https://group-six-uppsala.atlassian.net/browse/SCRUM-50
+SCRUM-50,Change the en/ett button in level 3 to a field you can fill out,Task,Done,6.5,2026-09-16 10:51:26,2026-10-16 19:04:38,https://group-six-uppsala.atlassian.net/browse/SCRUM-50
 SCRUM-49,Fix issue with language change not affecting instructions,Bug,In Progress,5.0,2026-09-16 10:46:54,2026-10-10 11:59:32,https://group-six-uppsala.atlassian.net/browse/SCRUM-49
 SCRUM-48,Sprint planning meeting,Task,Done,6.0,2026-09-16 10:43:45,2026-09-21 16:06:21,https://group-six-uppsala.atlassian.net/browse/SCRUM-48
 SCRUM-47,Fix issue with the educational information page,Bug,Done,3.0,2026-09-16 10:39:28,2026-09-30 12:38:00,https://group-six-uppsala.atlassian.net/browse/SCRUM-47
